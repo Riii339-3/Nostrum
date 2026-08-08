@@ -1,0 +1,25 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "minecraft:diamond",
+    "count": 1
+  }
+}
