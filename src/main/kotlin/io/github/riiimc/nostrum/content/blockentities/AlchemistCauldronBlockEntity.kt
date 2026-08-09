@@ -9,6 +9,10 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtOps
+import net.minecraft.nbt.Tag
+import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
@@ -18,6 +22,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
     var mode = AlchemistCauldronMode.ALCHEMY
     val inventory = ResizeStackHandler(0)
     var fluid = FluidStack.EMPTY
+    var potionData: PotionData? = null
     override fun saveAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
         super.saveAdditional(tag, provider)
         tag.putString("mode", mode.name)
@@ -32,6 +37,25 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             )
         }
 
+        val potionDataTag = ListTag()
+
+        if (potionData != null) {
+            val potionTag = CompoundTag()
+
+            val effectsTag = ListTag()
+
+            for (effect in potionData!!.effects) {
+                MobEffectInstance.CODEC
+                    .encodeStart(NbtOps.INSTANCE, effect)
+                    .result()
+                    .ifPresent(effectsTag::add)
+            }
+
+            potionTag.put("Effects", effectsTag)
+            potionTag.putInt("Remaining", potionData!!.remaining)
+
+            tag.put("PotionData", potionTag)
+        }
     }
 
     override fun loadAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
@@ -56,6 +80,29 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             fluid = newFluid ?: FluidStack.EMPTY
         } else {
             fluid = FluidStack.EMPTY
+        }
+
+        if (tag.contains("PotionData", Tag.TAG_COMPOUND.toInt())) {
+            val potionTag = tag.getCompound("PotionData")
+
+            val effects = mutableListOf<MobEffectInstance>()
+
+            val effectsTag = potionTag.getList(
+                "Effects",
+                Tag.TAG_COMPOUND.toInt()
+            )
+
+            for (element in effectsTag) {
+                MobEffectInstance.CODEC
+                    .parse(NbtOps.INSTANCE, element)
+                    .result()
+                    .ifPresent(effects::add)
+            }
+
+            potionData = PotionData(
+                effects,
+                potionTag.getInt("Remaining")
+            )
         }
     }
 

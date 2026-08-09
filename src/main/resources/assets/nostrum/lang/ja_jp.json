@@ -1,4 +1,8 @@
 {
   "block.nostrum.alchemist_cauldron": "錬金術師の大釜",
+  "block.nostrum.alchemist_cauldron.mode.alchemy": "レシピタイプを錬金術に変更しました",
+  "block.nostrum.alchemist_cauldron.mode.potion": "レシピタイプを錬金醸造に変更しました",
+  "block.nostrum.alchemist_cauldron.mode.infuse": "レシピタイプを錬金注入に変更しました",
+  "block.nostrum.alchemist_cauldron.mode.entity": "レシピタイプを生命錬金術に変更しました",
   "item.nostrum.alchemist_wand": "錬金術師の杖"
 }

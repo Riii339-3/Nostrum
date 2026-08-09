@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.CreativeModeTab
@@ -53,12 +54,6 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this)
 
-        // Register the item to a creative tab
-        modEventBus.addListener<BuildCreativeModeTabContentsEvent?>(Consumer { event: BuildCreativeModeTabContentsEvent? ->
-            this.addCreative(
-                event!!
-            )
-        })
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC)
@@ -72,11 +67,6 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
 
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber)
 
-    }
-
-    // Add the example block item to the building blocks tab
-    private fun addCreative(event: BuildCreativeModeTabContentsEvent) {
-        if (event.getTabKey() === CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM)
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -98,7 +88,10 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
         }
     }
 
+
     companion object {
+        fun rl(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MODID, path)
+
         // Define mod id in a common place for everything to reference
         const val MODID: String = "nostrum"
 
@@ -107,27 +100,6 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
 
 
         // Create a Deferred Register to hold Blocks which will all be registered under the "nostrum" namespace
-        val BLOCKS: DeferredRegister.Blocks = DeferredRegister.createBlocks(MODID)
-
-        // Create a Deferred Register to hold Items which will all be registered under the "nostrum" namespace
-        val ITEMS: DeferredRegister.Items = DeferredRegister.createItems(MODID)
-
-        // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "nostrum" namespace
-        val CREATIVE_MODE_TABS: DeferredRegister<CreativeModeTab?> =
-            DeferredRegister.create<CreativeModeTab?>(Registries.CREATIVE_MODE_TAB, MODID)
-
-        // Creates a new Block with the id "nostrum:example_block", combining the namespace and path
-        val EXAMPLE_BLOCK: DeferredBlock<Block?> =
-            BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE))
-
-        // Creates a new BlockItem with the id "nostrum:example_block", combining the namespace and path
-        val EXAMPLE_BLOCK_ITEM: DeferredItem<BlockItem?> = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK)
-
-        // Creates a new food item with the id "nostrum:example_id", nutrition 1 and saturation 2
-        val EXAMPLE_ITEM: DeferredItem<Item?> = ITEMS.registerSimpleItem(
-            "example_item",
-            Item.Properties().food(FoodProperties.Builder().alwaysEdible().nutrition(1).saturationModifier(2f).build())
-        )
 
     }
 }

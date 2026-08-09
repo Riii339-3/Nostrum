@@ -2,6 +2,7 @@ package io.github.riiimc.nostrum
 
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blocks.AlchemistCauldronBlock
+import io.github.riiimc.nostrum.content.items.AlchemistWandItem
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipeSerializer
 import net.minecraft.core.registries.Registries
@@ -49,7 +50,7 @@ object NostrumRegistries {
     val ALCHEMIST_CAULDRON_BE_TYPE = BE_TYPES.register("alchemist_cauldron", Supplier { BlockEntityType.Builder.of(::AlchemistCauldronBlockEntity, ALCHEMIST_CAULDRON_BLOCK.get()).build(null)})
     val ALCHEMIST_CAULDRON_ITEM = ITEMS.register("alchemist_cauldron", Supplier { BlockItem(ALCHEMIST_CAULDRON_BLOCK.get(), Item.Properties())})
 
-    val ALCHEMIST_WAND = ITEMS.register("alchemist_wand", Supplier { Item(Item.Properties().stacksTo(1).durability(1024))})
+    val ALCHEMIST_WAND = ITEMS.register("alchemist_wand", Supplier { AlchemistWandItem(Item.Properties().stacksTo(1).durability(1024))})
 
     fun registry(bus: IEventBus) {
         ITEMS.register(bus)
