@@ -4,6 +4,8 @@ import io.github.riiimc.nostrum.Nostrum
 import io.github.riiimc.nostrum.NostrumRegistries
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blockentities.PotionData
+import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
+import io.github.riiimc.nostrum.content.components.AlchemicalPotionForm
 import io.github.riiimc.nostrum.content.recipes.AlchemistCauldronMode
 import io.github.riiimc.nostrum.utils.NostrumTags
 import net.minecraft.core.BlockPos
@@ -218,6 +220,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             ?: return ItemInteractionResult.FAIL
 
                         val effects = potion.value().effects.toMutableList()
+                        var form: AlchemicalPotionForm = AlchemicalPotionForm.DRINK
 
                         // 強化素材
                         for (i in 2 until inv.slots) {
@@ -225,11 +228,11 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
 
                             if (item.isEmpty) continue
 
-                            for (index in effects.indices) {
-                                val effect = effects[index]
+                            when {
+                                item.`is`(NostrumTags.STRONG_1) -> {
+                                    for (index in effects.indices) {
+                                        val effect = effects[index]
 
-                                when {
-                                    item.`is`(NostrumTags.STRONG_1) -> {
                                         effects[index] = MobEffectInstance(
                                             effect.effect,
                                             (effect.duration * 0.75).toInt(),
@@ -239,11 +242,22 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                                             effect.showIcon()
                                         )
                                     }
+                                }
 
-                                    else -> {
-                                        potionFatal()
-                                        return ItemInteractionResult.FAIL
-                                    }
+                                item.`is`(NostrumTags.SPLASH) -> {
+                                    form = AlchemicalPotionForm.SPLASH
+                                }
+
+                                item.`is`(NostrumTags.LINGERING) -> {
+                                    form = AlchemicalPotionForm.LINGERING
+                                }
+                                item.`is`(NostrumTags.AEROSOL) -> {
+                                    form = AlchemicalPotionForm.AEROSOL
+                                }
+
+                                else -> {
+                                    potionFatal()
+                                    return ItemInteractionResult.FAIL
                                 }
                             }
                         }
@@ -263,7 +277,8 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                         // ポーション生成
                         blockEntity.potionData = PotionData(
                             effects,
-                            3
+                            3,
+                            form
                         )
 
                         inv.compact()
@@ -285,7 +300,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     val data = blockEntity.potionData
                         ?: return ItemInteractionResult.FAIL
 
-                    val potion = ItemStack(Items.POTION)
+                    val potion = ItemStack(NostrumRegistries.ALCHEMICAL_POTION.get())
 
                     potion.set(
                         DataComponents.POTION_CONTENTS,
@@ -293,6 +308,13 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             Optional.empty(),
                             Optional.empty(),
                             data.effects
+                        )
+                    )
+
+                    potion.set(
+                        NostrumRegistries.ALCHEMICAL_POTION_CONTENT,
+                        AlchemicalPotionContent(
+                            data.form
                         )
                     )
 

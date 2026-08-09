@@ -4,5 +4,12 @@
   "block.nostrum.alchemist_cauldron.mode.potion": "Change Mode to Alchemy Potion",
   "block.nostrum.alchemist_cauldron.mode.infuse": "Change Mode to Alchemy Infusion",
   "block.nostrum.alchemist_cauldron.mode.entity": "Change Mode to Entity Alchemy",
-  "item.nostrum.alchemist_wand": "Alchemist Wand"
+  "item.nostrum.alchemist_wand": "Alchemist Wand",
+  "item.nostrum.alchemical_potion": "%sAlchemical Potion",
+  "item.nostrum.alchemical_potion.form.drink": "",
+  "item.nostrum.alchemical_potion.form.splash": "Splash ",
+  "item.nostrum.alchemical_potion.form.lingering": "Lingering ",
+  "item.nostrum.alchemical_potion.form.aerosol": "Aerosol ",
+
+  "emi.category.nostrum.alchemy": "Alchemy"
 }

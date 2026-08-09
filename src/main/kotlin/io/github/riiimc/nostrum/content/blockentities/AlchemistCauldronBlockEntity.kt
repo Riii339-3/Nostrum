@@ -1,6 +1,7 @@
 package io.github.riiimc.nostrum.content.blockentities
 
 import io.github.riiimc.nostrum.NostrumRegistries
+import io.github.riiimc.nostrum.content.components.AlchemicalPotionForm
 import io.github.riiimc.nostrum.content.recipes.AlchemistCauldronMode
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipeInput
@@ -23,6 +24,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
     val inventory = ResizeStackHandler(0)
     var fluid = FluidStack.EMPTY
     var potionData: PotionData? = null
+
     override fun saveAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
         super.saveAdditional(tag, provider)
         tag.putString("mode", mode.name)
@@ -36,8 +38,6 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
                 fluid.save(provider)
             )
         }
-
-        val potionDataTag = ListTag()
 
         if (potionData != null) {
             val potionTag = CompoundTag()
@@ -53,7 +53,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
 
             potionTag.put("Effects", effectsTag)
             potionTag.putInt("Remaining", potionData!!.remaining)
-
+            potionTag.putString("Form", potionData!!.form.name)
             tag.put("PotionData", potionTag)
         }
     }
@@ -101,8 +101,18 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
 
             potionData = PotionData(
                 effects,
-                potionTag.getInt("Remaining")
+                potionTag.getInt("Remaining"),
+                potionTag.getString("Form").let { formName ->
+                    try {
+                        AlchemicalPotionForm.valueOf(formName)
+                    } catch (e: IllegalArgumentException) {
+                        AlchemicalPotionForm.DRINK
+                    }
+                }
             )
+        }
+        else {
+            potionData = null
         }
     }
 

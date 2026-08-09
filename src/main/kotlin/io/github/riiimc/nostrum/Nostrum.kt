@@ -2,6 +2,7 @@ package io.github.riiimc.nostrum
 
 import com.mojang.logging.LogUtils
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.entity.ThrownItemRenderer
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
@@ -26,6 +27,7 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.neoforge.client.event.EntityRenderersEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
@@ -38,7 +40,7 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Nostrum.Companion.MODID)
+@Mod(Nostrum.MODID)
 class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -84,7 +86,15 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
         fun onClientSetup(event: FMLClientSetupEvent?) {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP")
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName())
+            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().user.name)
+        }
+        @SubscribeEvent
+        @JvmStatic
+        fun registerEntityRenderers(event: EntityRenderersEvent.RegisterRenderers) {
+            event.registerEntityRenderer(
+                NostrumRegistries.THROWN_ALCHEMICAL_POTION.get(),
+                ::ThrownItemRenderer
+            )
         }
     }
 

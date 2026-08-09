@@ -2,11 +2,18 @@ package io.github.riiimc.nostrum
 
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blocks.AlchemistCauldronBlock
+import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
+import io.github.riiimc.nostrum.content.entities.ThrownAlchemicalPotion
+import io.github.riiimc.nostrum.content.items.AlchemicalPotionItem
 import io.github.riiimc.nostrum.content.items.AlchemistWandItem
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipeSerializer
+import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.RecipeSerializer
@@ -29,7 +36,7 @@ object NostrumRegistries {
     val RECIPE_SERIALIZERS: DeferredRegister<RecipeSerializer<*>?> =
         DeferredRegister.create<RecipeSerializer<*>?>(Registries.RECIPE_SERIALIZER, Nostrum.MODID)
     val CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Nostrum.MODID)
-
+    val ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, Nostrum.MODID)
     val ALCHEMY_RECIPE_SERIALIZER: Supplier<RecipeSerializer<AlchemyRecipe>> =
         RECIPE_SERIALIZERS.register("alchemy", Supplier { AlchemyRecipeSerializer() })
 
@@ -52,10 +59,39 @@ object NostrumRegistries {
 
     val ALCHEMIST_WAND = ITEMS.register("alchemist_wand", Supplier { AlchemistWandItem(Item.Properties().stacksTo(1).durability(1024))})
 
+    val ALCHEMICAL_POTION_CONTENT = DATA_COMPONENTS.register(
+        "alchemical_potion_content", Supplier {
+        DataComponentType.builder<AlchemicalPotionContent>()
+            .persistent(AlchemicalPotionContent.CODEC)
+            .networkSynchronized(AlchemicalPotionContent.STREAM_CODEC)
+            .build()
+    })
+
+    val ALCHEMICAL_POTION = ITEMS.register("alchemical_potion", Supplier {
+        AlchemicalPotionItem(Item.Properties().stacksTo(16))
+    })
+
+    val THROWN_ALCHEMICAL_POTION =
+        ENTITY_TYPES.register("thrown_alchemical_potion", Supplier {
+            EntityType.Builder
+                .of(
+                    ::ThrownAlchemicalPotion,
+                    MobCategory.MISC
+                )
+                .sized(0.25f, 0.25f)
+                .clientTrackingRange(4)
+                .updateInterval(10)
+                .build(
+                    Nostrum.rl("thrown_alchemical_potion")
+                        .toString()
+                )
+        })
     fun registry(bus: IEventBus) {
+        ENTITY_TYPES.register(bus)
         ITEMS.register(bus)
         BLOCKS.register(bus)
         CREATIVE_TABS.register(bus)
+        DATA_COMPONENTS.register(bus)
         BE_TYPES.register(bus)
         RECIPE_TYPES.register(bus)
         RECIPE_SERIALIZERS.register(bus)

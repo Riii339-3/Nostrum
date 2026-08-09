@@ -4,5 +4,12 @@
   "block.nostrum.alchemist_cauldron.mode.potion": "レシピタイプを錬金醸造に変更しました",
   "block.nostrum.alchemist_cauldron.mode.infuse": "レシピタイプを錬金注入に変更しました",
   "block.nostrum.alchemist_cauldron.mode.entity": "レシピタイプを生命錬金術に変更しました",
-  "item.nostrum.alchemist_wand": "錬金術師の杖"
+  "item.nostrum.alchemist_wand": "錬金術師の杖",
+  "item.nostrum.alchemical_potion": "錬金%sポーション",
+  "item.nostrum.alchemical_potion.form.drink": "",
+  "item.nostrum.alchemical_potion.form.splash": "スプラッシュ",
+  "item.nostrum.alchemical_potion.form.lingering": "残留",
+  "item.nostrum.alchemical_potion.form.aerosol": "Aerosol　",
+
+  "emi.category.nostrum.alchemy": "錬金術"
 }
