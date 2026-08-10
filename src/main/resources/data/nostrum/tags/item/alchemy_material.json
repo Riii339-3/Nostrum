@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "nostrum:basic_alchemical_material",
+    "nostrum:intermediate_alchemical_material",
+    "nostrum:advanced_alchemical_material",
+    "nostrum:superior_alchemical_material",
+    "nostrum:ultimate_alchemical_material",
+    "nostrum:alchemical_brewing_material",
+    "nostrum:alchemical_mixing_material"
+  ]
+}

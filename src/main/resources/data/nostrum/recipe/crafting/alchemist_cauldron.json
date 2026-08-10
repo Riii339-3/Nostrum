@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "BAB",
+    "B/B"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "B": {
+      "item": "minecraft:gold_ingot"
+    },
+    "A": {
+      "item": "minecraft:cauldron"
+    },
+    "/": {
+      "item": "minecraft:blaze_powder"
+    }
+  },
+  "result": {
+    "id": "nostrum:alchemist_cauldron"
+  }
+}

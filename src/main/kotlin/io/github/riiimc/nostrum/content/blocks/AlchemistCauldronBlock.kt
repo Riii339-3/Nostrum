@@ -1,6 +1,5 @@
 package io.github.riiimc.nostrum.content.blocks
 
-import io.github.riiimc.nostrum.Nostrum
 import io.github.riiimc.nostrum.NostrumRegistries
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blockentities.PotionData
@@ -11,19 +10,17 @@ import io.github.riiimc.nostrum.utils.NostrumTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
-import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.alchemy.PotionBrewing
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
-import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -35,7 +32,6 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
-import net.neoforged.neoforge.common.brewing.BrewingRecipe
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import java.util.Optional
@@ -76,9 +72,6 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
     ): ItemInteractionResult {
         val blockEntity = level.getBlockEntity(pos)
         if (blockEntity !is AlchemistCauldronBlockEntity) return super.useItemOn(stack, state, level, pos, player, hand, result)
-        println("=== MODE CHECK ===")
-        println("blockEntity.mode = ${blockEntity.mode}")
-        println("blockEntity class = ${blockEntity::class.java}")
         when (stack.item) {
             NostrumRegistries.ALCHEMIST_WAND.get() -> {
                 if (player.isShiftKeyDown) {
@@ -95,15 +88,16 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
                 }
 
-                println(
-                    "=== MODE CHECK === " +
-                            "side=${if (level.isClientSide) "CLIENT" else "SERVER"}, " +
-                            "mode=${blockEntity.mode}, " +
-                            "thread=${Thread.currentThread().name}"
-                )
+
                 if (level.isClientSide) {
                     return super.useItemOn(stack, state, level, pos, player, hand, result)
                 }
+                val slot = when (hand) {
+                    InteractionHand.MAIN_HAND -> EquipmentSlot.MAINHAND
+                    InteractionHand.OFF_HAND -> EquipmentSlot.OFFHAND
+                }
+
+                stack.hurtAndBreak(1, player, slot)
 
                 when (blockEntity.mode) {
                     AlchemistCauldronMode.ALCHEMY -> {
@@ -254,6 +248,9 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                                 item.`is`(NostrumTags.AEROSOL) -> {
                                     form = AlchemicalPotionForm.AEROSOL
                                 }
+                                item.`is`(NostrumTags.SPRAY) -> {
+                                    form = AlchemicalPotionForm.SPRAY
+                                }
 
                                 else -> {
                                     potionFatal()
@@ -286,6 +283,93 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
 
                         return ItemInteractionResult.SUCCESS
                     }
+
+                    AlchemistCauldronMode.POTION_MIXING -> {
+                        var potionData = blockEntity.potionData
+                        val potionData2 = blockEntity.potionData2
+
+                        if (potionData == null || potionData2 == null) return ItemInteractionResult.SUCCESS
+                        var mixingMaterial = 0
+                        for (i in 0 until blockEntity.inventory.slots) {
+                            val item = blockEntity.inventory.getStackInSlot(i)
+                            if (item.`is`(NostrumTags.MIXING_MATERIAL)) {
+                                mixingMaterial++
+                                blockEntity.inventory.setStackInSlot(i, ItemStack.EMPTY)
+                            }
+                            else {
+                                blockEntity.inventory.compact()
+                                blockEntity.setChanged()
+                                potionFatal()
+                                return ItemInteractionResult.SUCCESS
+                            }
+                        }
+                        var percent = mixingMaterial * 5
+                        if (percent > 100) percent = 100
+
+                        val success: Boolean = Math.random() * 100 < percent.coerceIn(0, 100)
+                        if (success) {
+                            val newEffects = mutableListOf<MobEffectInstance>()
+
+                            // potionData 側をコピー
+                            potionData.effects.forEach { effect ->
+                                newEffects.add(
+                                    MobEffectInstance(
+                                        effect.effect,
+                                        effect.duration,
+                                        effect.amplifier,
+                                        effect.isAmbient,
+                                        effect.isVisible,
+                                        effect.showIcon()
+                                    )
+                                )
+                            }
+
+                            // potionData2 側を合成
+                            potionData2.effects.forEach { effect2 ->
+                                val existing = newEffects.find {
+                                    it.effect == effect2.effect
+                                }
+
+                                if (existing != null) {
+                                    // 同じ効果なら時間とレベルを加算
+                                    val index = newEffects.indexOf(existing)
+
+                                    newEffects[index] = MobEffectInstance(
+                                        existing.effect,
+                                        existing.duration + effect2.duration,
+                                        existing.amplifier + effect2.amplifier + 1,
+                                        existing.isAmbient || effect2.isAmbient,
+                                        existing.isVisible || effect2.isVisible,
+                                        existing.showIcon() || effect2.showIcon()
+                                    )
+                                } else {
+                                    // 違う効果ならそのまま追加
+                                    newEffects.add(
+                                        MobEffectInstance(
+                                            effect2.effect,
+                                            effect2.duration,
+                                            effect2.amplifier,
+                                            effect2.isAmbient,
+                                            effect2.isVisible,
+                                            effect2.showIcon()
+                                        )
+                                    )
+                                }
+                            }
+                            blockEntity.potionData = PotionData(newEffects, 3, potionData.form)
+                            blockEntity.potionData2 = null
+
+                            blockEntity.inventory.compact()
+                            blockEntity.setChanged()
+                            return ItemInteractionResult.SUCCESS
+                        }
+                        else {
+                            potionFatal()
+                            blockEntity.inventory.compact()
+                            blockEntity.setChanged()
+                            return ItemInteractionResult.SUCCESS
+                        }
+                    }
                 }
 
                 blockEntity.inventory.compact()
@@ -296,32 +380,66 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
             else -> {
                 val handItem = player.getItemInHand(hand)
                 if (handItem.isEmpty) return super.useItemOn(stack, state, level, pos, player, hand, result)
-                if (handItem.`is`(Items.GLASS_BOTTLE) && blockEntity.mode == AlchemistCauldronMode.POTION && blockEntity.potionData != null) {
-                    val data = blockEntity.potionData
-                        ?: return ItemInteractionResult.FAIL
-
+                if (handItem.`is`(Items.GLASS_BOTTLE)) {
+                    if (level.isClientSide) {
+                        return ItemInteractionResult.SUCCESS
+                    }
                     val potion = ItemStack(NostrumRegistries.ALCHEMICAL_POTION.get())
+                    if (blockEntity.potionData2 != null) {
+                        val data = blockEntity.potionData2
+                            ?: return ItemInteractionResult.FAIL
 
-                    potion.set(
-                        DataComponents.POTION_CONTENTS,
-                        PotionContents(
-                            Optional.empty(),
-                            Optional.empty(),
-                            data.effects
+                        potion.set(
+                            DataComponents.POTION_CONTENTS,
+                            PotionContents(
+                                Optional.empty(),
+                                Optional.empty(),
+                                data.effects
+                            )
                         )
-                    )
 
-                    potion.set(
-                        NostrumRegistries.ALCHEMICAL_POTION_CONTENT,
-                        AlchemicalPotionContent(
-                            data.form
+                        potion.set(
+                            NostrumRegistries.ALCHEMICAL_POTION_CONTENT,
+                            AlchemicalPotionContent(
+                                data.form
+                            )
                         )
-                    )
 
-                    data.remaining--
+                        data.remaining--
 
-                    if (data.remaining <= 0) {
-                        blockEntity.potionData = null
+                        if (data.remaining <= 0) {
+                            blockEntity.potionData2 = null
+                        }
+                    }
+                    else if (blockEntity.potionData != null) {
+                        val data = blockEntity.potionData
+                            ?: return ItemInteractionResult.FAIL
+
+                        potion.set(
+                            DataComponents.POTION_CONTENTS,
+                            PotionContents(
+                                Optional.empty(),
+                                Optional.empty(),
+                                data.effects
+                            )
+                        )
+
+                        potion.set(
+                            NostrumRegistries.ALCHEMICAL_POTION_CONTENT,
+                            AlchemicalPotionContent(
+                                data.form
+                            )
+                        )
+
+                        data.remaining--
+
+                        if (data.remaining <= 0) {
+                            blockEntity.potionData = null
+                        }
+
+                    }
+                    else {
+                        return ItemInteractionResult.FAIL
                     }
 
                     blockEntity.setChanged()
@@ -333,6 +451,38 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     Capabilities.FluidHandler.ITEM,
                     null
                 )
+                if (handItem.`is`(NostrumRegistries.ALCHEMICAL_POTION.get())) {
+                    val potions = handItem.get(
+                        DataComponents.POTION_CONTENTS
+                    ) ?: return ItemInteractionResult.SUCCESS
+
+                    val content = handItem.get(
+                        NostrumRegistries.ALCHEMICAL_POTION_CONTENT
+                    ) ?: return ItemInteractionResult.SUCCESS
+
+                    val potionData = PotionData(
+                        potions.allEffects.toMutableList(),
+                        1,
+                        content.form
+                    )
+
+                    if (blockEntity.potionData == null) {
+                        blockEntity.potionData = potionData
+                    } else if (blockEntity.potionData!!.remaining in 1..2 && blockEntity.potionData!!.form == potionData.form) {
+                        blockEntity.potionData!!.remaining++
+                    } else if (blockEntity.potionData2 == null) {
+                        blockEntity.potionData2 = potionData
+                    } else if (blockEntity.potionData2!!.remaining in 1..2 && blockEntity.potionData2!!.form == potionData.form) {
+                        blockEntity.potionData2!!.remaining++
+                    }
+                    else {
+                        return ItemInteractionResult.FAIL
+                    }
+                    blockEntity.setChanged()
+                    player.addItem(ItemStack(Items.GLASS_BOTTLE))
+                    player.getItemInHand(hand).shrink(1)
+                    return ItemInteractionResult.SUCCESS
+                }
                 if (handler != null) {
 
                     val contained = handler.getFluidInTank(0)

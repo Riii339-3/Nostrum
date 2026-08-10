@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  #",
+    " A ",
+    "/  "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "A": {
+      "item": "minecraft:stone"
+    },
+    "/": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "result": {
+    "id": "nostrum:alchemist_wand"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:advanced_alchemical_material"
+    },
+    {
+      "item": "minecraft:nether_wart"
+    },
+    {
+      "item": "minecraft:nether_wart"
+    },
+    {
+      "item": "minecraft:nether_wart"
+    },
+    {
+      "item": "minecraft:nether_wart"
+    },
+    {
+      "tag": "c:mushrooms"
+    },
+    {
+      "tag": "c:mushrooms"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:alchemical_brewing_material",
+    "count": 4
+  }
+}

@@ -24,6 +24,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
     val inventory = ResizeStackHandler(0)
     var fluid = FluidStack.EMPTY
     var potionData: PotionData? = null
+    var potionData2: PotionData? = null
 
     override fun saveAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
         super.saveAdditional(tag, provider)
@@ -55,6 +56,23 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             potionTag.putInt("Remaining", potionData!!.remaining)
             potionTag.putString("Form", potionData!!.form.name)
             tag.put("PotionData", potionTag)
+        }
+        if (potionData2 != null) {
+            val potionTag = CompoundTag()
+
+            val effectsTag = ListTag()
+
+            for (effect in potionData2!!.effects) {
+                MobEffectInstance.CODEC
+                    .encodeStart(NbtOps.INSTANCE, effect)
+                    .result()
+                    .ifPresent(effectsTag::add)
+            }
+
+            potionTag.put("Effects", effectsTag)
+            potionTag.putInt("Remaining", potionData!!.remaining)
+            potionTag.putString("Form", potionData!!.form.name)
+            tag.put("PotionData2", potionTag)
         }
     }
 

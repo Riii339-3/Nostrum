@@ -4,12 +4,35 @@
   "block.nostrum.alchemist_cauldron.mode.potion": "Change Mode to Alchemy Potion",
   "block.nostrum.alchemist_cauldron.mode.infuse": "Change Mode to Alchemy Infusion",
   "block.nostrum.alchemist_cauldron.mode.entity": "Change Mode to Entity Alchemy",
+  "block.nostrum.alchemist_cauldron.mode.potion_mixing": "Change Mode to Potion Mixing",
   "item.nostrum.alchemist_wand": "Alchemist Wand",
   "item.nostrum.alchemical_potion": "%sAlchemical Potion",
   "item.nostrum.alchemical_potion.form.drink": "",
   "item.nostrum.alchemical_potion.form.splash": "Splash ",
   "item.nostrum.alchemical_potion.form.lingering": "Lingering ",
   "item.nostrum.alchemical_potion.form.aerosol": "Aerosol ",
+  "item.nostrum.alchemical_potion.form.spray": "Spray ",
+
+  "section.nostrum.alchemical_potions.drink": "Drink",
+  "section.nostrum.alchemical_potions.splash": "Splash",
+  "section.nostrum.alchemical_potions.lingering": "Lingering",
+  "section.nostrum.alchemical_potions.aerosol": "Aerosol",
+  "section.nostrum.alchemical_potions.spray": "Spray",
+
+  "section.nostrum.alchemy": "Alchemy",
+  "section.nostrum.alchemy_materials": "Alchemy Materials",
+
+  "item.nostrum.basic_alchemical_material": "Alchemy Basic Material",
+  "item.nostrum.intermediate_alchemical_material": "Alchemy Intermediate Material",
+  "item.nostrum.advanced_alchemical_material": "Alchemy Advanced Material",
+  "item.nostrum.superior_alchemical_material": "Alchemy Superior Material",
+  "item.nostrum.ultimate_alchemical_material": "Alchemy Ultimate Material",
+  "item.nostrum.alchemical_brewing_material": "Alchemy Brewing Material",
+  "item.nostrum.alchemical_mixing_material": "Alchemy Mixing Material",
+
+  "itemGroup.nostrum": "Nostrum",
+  "itemGroup.alchemical_potions": "Nostrum: Alchemical Potions",
+
 
   "emi.category.nostrum.alchemy": "Alchemy"
 }

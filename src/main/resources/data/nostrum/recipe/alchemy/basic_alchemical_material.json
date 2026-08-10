@@ -1,0 +1,31 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "minecraft:spider_eye"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:short_grass"
+    },
+    {
+      "tag": "c:mushrooms"
+    },
+    {
+      "tag": "c:seeds"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:basic_alchemical_material",
+    "count": 8
+  }
+}

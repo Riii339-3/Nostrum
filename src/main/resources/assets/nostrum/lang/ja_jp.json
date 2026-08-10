@@ -4,12 +4,35 @@
   "block.nostrum.alchemist_cauldron.mode.potion": "レシピタイプを錬金醸造に変更しました",
   "block.nostrum.alchemist_cauldron.mode.infuse": "レシピタイプを錬金注入に変更しました",
   "block.nostrum.alchemist_cauldron.mode.entity": "レシピタイプを生命錬金術に変更しました",
+  "block.nostrum.alchemist_cauldron.mode.potion_mixing": "レシピタイプをポーション混成に変更しました",
+
   "item.nostrum.alchemist_wand": "錬金術師の杖",
   "item.nostrum.alchemical_potion": "錬金%sポーション",
   "item.nostrum.alchemical_potion.form.drink": "",
   "item.nostrum.alchemical_potion.form.splash": "スプラッシュ",
   "item.nostrum.alchemical_potion.form.lingering": "残留",
   "item.nostrum.alchemical_potion.form.aerosol": "Aerosol　",
+  "item.nostrum.alchemical_potion.form.spray": "スプレー",
+
+  "section.nostrum.alchemical_potions.drink": "飲むタイプ",
+  "section.nostrum.alchemical_potions.splash": "スプラッシュ",
+  "section.nostrum.alchemical_potions.lingering": "残留",
+  "section.nostrum.alchemical_potions.aerosol": "Aerosol",
+  "section.nostrum.alchemical_potions.spray": "スプレー",
+
+  "section.nostrum.alchemy": "錬金術",
+
+  "itemGroup.nostrum": "Nostrum",
+  "itemGroup.alchemical_potions": "Nostrum: 錬金ポーション",
+
+  "item.nostrum.basic_alchemical_material": "初級錬金素材",
+  "item.nostrum.intermediate_alchemical_material": "中級錬金素材",
+  "item.nostrum.advanced_alchemical_material": "上級錬金素材",
+  "item.nostrum.superior_alchemical_material": "高級錬金素材",
+  "item.nostrum.ultimate_alchemical_material": "究極錬金素材",
+  "item.nostrum.alchemical_brewing_material": "錬金醸造素材",
+  "item.nostrum.alchemical_mixing_material": "錬金混成素材",
+
 
   "emi.category.nostrum.alchemy": "錬金術"
 }

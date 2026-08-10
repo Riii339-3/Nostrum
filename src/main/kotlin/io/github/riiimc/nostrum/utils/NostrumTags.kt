@@ -10,5 +10,6 @@ object NostrumTags {
     val SPLASH = TagKey.create(Registries.ITEM, Nostrum.rl("potion/splash"))
     val LINGERING = TagKey.create(Registries.ITEM, Nostrum.rl("potion/lingering"))
     val AEROSOL = TagKey.create(Registries.ITEM, Nostrum.rl("potion/aerosol"))
-
+    val SPRAY = TagKey.create(Registries.ITEM, Nostrum.rl("potion/spray"))
+    val MIXING_MATERIAL = TagKey.create(Registries.ITEM, Nostrum.rl("mixing_material"))
 }
