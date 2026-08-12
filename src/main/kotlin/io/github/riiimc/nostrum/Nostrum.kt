@@ -7,6 +7,7 @@ import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.entity.ThrownItemRenderer
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Blocks
 import net.neoforged.api.distmarker.Dist
@@ -22,6 +23,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.AddReloadListenerEvent
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
 import org.slf4j.Logger
 import java.util.function.Consumer
@@ -94,6 +96,28 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
             event.register(
                 AlchemicalPotionItemColor(),
                 NostrumRegistries.ALCHEMICAL_POTION.get()
+            )
+        }
+
+        @JvmStatic
+        @SubscribeEvent
+        fun onItemTooltip(event: ItemTooltipEvent) {
+            val stack = event.itemStack
+
+            val component = stack.get(
+                NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT
+            ) ?: return
+
+            event.toolTip.add(
+                Component.translatable(
+                    "nostrum.tooltip.alchemical_upgrade"
+                )
+            )
+            event.toolTip.add(
+                Component.translatable(
+                    "nostrum.tooltip.alchemical_upgrade.description",
+                    Component.translatable("nostrum.tooltip.alchemical_upgrade.upgrade.${component.id.namespace}.${component.id.path}")
+                )
             )
         }
     }

@@ -1,0 +1,30 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "minecraft:wooden_sword"
+    },
+    {
+      "item": "nostrum:advanced_alchemical_material"
+    },
+    {
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 2000
+  },
+  "result": {
+    "id": "nostrum:dirt_sword",
+    "count": 1,
+    "components": {
+      "nostrum:alchemical_upgrade": {
+        "id": "nostrum:critical_attack"
+      }
+    }
+  }
+}

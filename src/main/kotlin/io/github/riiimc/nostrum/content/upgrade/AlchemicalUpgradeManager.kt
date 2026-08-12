@@ -129,6 +129,14 @@ class AlchemicalUpgradeManager : SimpleJsonResourceReloadListener(
                 val variables =
                     AlchemicalExpression.createVariables(event)
 
+                for ((name, expression) in alchemicalEvent.variables) {
+                    variables[name] =
+                        AlchemicalExpression.execute(
+                            expression,
+                            variables
+                        )
+                }
+
                 val conditionsPassed =
                     alchemicalEvent.conditions.all { condition ->
                         try {

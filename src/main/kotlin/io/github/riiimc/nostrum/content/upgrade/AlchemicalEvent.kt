@@ -13,6 +13,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent
 
 data class AlchemicalEvent(
     val eventClass: Class<out Event>,
+    val variables: Map<String, String>,
     val conditions: List<String>,
     val actions: List<String>
 ) {
@@ -57,6 +58,13 @@ data class AlchemicalEvent(
                     EVENT_CODEC
                         .fieldOf("event")
                         .forGetter(AlchemicalEvent::eventClass),
+
+                    Codec.unboundedMap(
+                        Codec.STRING,
+                        Codec.STRING
+                    )
+                        .optionalFieldOf("variables", emptyMap())
+                        .forGetter(AlchemicalEvent::variables),
 
                     Codec.STRING
                         .listOf()

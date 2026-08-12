@@ -21,7 +21,7 @@
     "amount": 1000,
     "components": {
       "nostrum:alchemical_upgrade": {
-        "id": "nostrum:example_upgrade"
+        "id": "nostrum:critical_heal"
       }
     }
   }

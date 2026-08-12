@@ -7,6 +7,8 @@ import java.lang.reflect.Modifier
 
 
 object AlchemicalExpression {
+    private val random = java.util.Random()
+
     private fun invoke(
         target: Any,
         methodName: String,
@@ -613,21 +615,26 @@ object AlchemicalExpression {
         name: String,
         variables: Map<String, Any?>
     ): Any? {
+        if (!variables.containsKey(name)) {
+            error("Unknown variable: $name")
+        }
+
         return variables[name]
-            ?: error("Unknown variable: $name")
     }
 
     fun createVariables(
         event: Event
-    ): Map<String, Any?> {
-        return mapOf(
+    ): MutableMap<String, Any?> {
+        return mutableMapOf(
             "event" to event,
 
             "ALCHEMICAL_UPGRADE_COMPONENT" to
                     NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
 
             "ResourceLocation" to
-                    ResourceLocation::class.java
+                    ResourceLocation::class.java,
+
+            "Random" to random
         )
     }
 

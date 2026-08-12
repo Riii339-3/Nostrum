@@ -8,7 +8,6 @@ import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionForm
 import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent
 import io.github.riiimc.nostrum.content.recipes.AlchemistCauldronMode
-import io.github.riiimc.nostrum.content.upgrade.AlchemicalUpgradeManager
 import io.github.riiimc.nostrum.content.upgrade.AttributeData
 import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import io.github.riiimc.nostrum.utils.NostrumTags
@@ -45,6 +44,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import java.util.*
 
 class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityBlock {
+
     override fun newBlockEntity(p0: BlockPos, p1: BlockState): BlockEntity {
         return AlchemistCauldronBlockEntity(p0, p1)
     }
@@ -181,7 +181,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                         val inv = blockEntity.inventory
 
                         if (inv.slots !in 3..5 || blockEntity.potionData != null) {
-                            potionFatal()
+                            potionFatal(blockEntity, level, pos)
                             return ItemInteractionResult.FAIL
                         }
 
@@ -190,12 +190,12 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                         val potionIngredient = inv.getStackInSlot(1)
 
                         if (!firstItem.`is`(NostrumTags.BREWING_MATERIAL)) {
-                            potionFatal()
+                            potionFatal(blockEntity, level, pos)
                             return ItemInteractionResult.FAIL
                         }
 
                         if (fluid.amount < 1000) {
-                            potionFatal()
+                            potionFatal(blockEntity, level, pos)
                             return ItemInteractionResult.FAIL
                         }
 
@@ -213,7 +213,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
 
                         // AWKWARD + 材料
                         if (!potionBrewing.hasMix(awkwardPotion, potionIngredient)) {
-                            potionFatal()
+                            potionFatal(blockEntity, level, pos)
                             return ItemInteractionResult.FAIL
                         }
 
@@ -272,7 +272,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                                 }
 
                                 else -> {
-                                    potionFatal()
+                                    potionFatal(blockEntity, level, pos)
                                     return ItemInteractionResult.FAIL
                                 }
                             }
@@ -317,7 +317,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             } else {
                                 blockEntity.inventory.compact()
                                 blockEntity.setChanged()
-                                potionFatal()
+                                potionFatal(blockEntity, level, pos)
                                 return ItemInteractionResult.SUCCESS
                             }
                         }
@@ -381,7 +381,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             blockEntity.setChanged()
                             return ItemInteractionResult.SUCCESS
                         } else {
-                            potionFatal()
+                            potionFatal(blockEntity, level, pos)
                             blockEntity.inventory.compact()
                             blockEntity.setChanged()
                             return ItemInteractionResult.SUCCESS
@@ -881,7 +881,9 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
         return SHAPE
     }
 
-    fun potionFatal() {
+    fun potionFatal(be: AlchemistCauldronBlockEntity, level: Level, pos: BlockPos) {
 
+        be.potionData = null
+        be.potionData2 = null
     }
 }

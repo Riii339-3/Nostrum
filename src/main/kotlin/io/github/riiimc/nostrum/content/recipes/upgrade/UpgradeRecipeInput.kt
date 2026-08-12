@@ -6,6 +6,7 @@ import net.minecraft.world.item.crafting.RecipeInput
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.fluids.FluidStack
 
+/*
 class UpgradeRecipeInput(val stacks: NonNullList<ItemStack>, val fluid: FluidStack): RecipeInput {
     override fun getItem(slot: Int): ItemStack {
         return stacks.getOrElse(slot) {
@@ -18,3 +19,5 @@ class UpgradeRecipeInput(val stacks: NonNullList<ItemStack>, val fluid: FluidSta
     }
 
 }
+
+ */

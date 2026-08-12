@@ -13,13 +13,13 @@
   "item.nostrum.alchemical_potion.form.drink": "",
   "item.nostrum.alchemical_potion.form.splash": "スプラッシュ",
   "item.nostrum.alchemical_potion.form.lingering": "残留",
-  "item.nostrum.alchemical_potion.form.aerosol": "Aerosol　",
+  "item.nostrum.alchemical_potion.form.aerosol": "エアゾール",
   "item.nostrum.alchemical_potion.form.spray": "スプレー",
 
   "section.nostrum.alchemical_potions.drink": "飲むタイプ",
   "section.nostrum.alchemical_potions.splash": "スプラッシュ",
   "section.nostrum.alchemical_potions.lingering": "残留",
-  "section.nostrum.alchemical_potions.aerosol": "Aerosol",
+  "section.nostrum.alchemical_potions.aerosol": "エアゾール",
   "section.nostrum.alchemical_potions.spray": "スプレー",
 
   "section.nostrum.alchemy": "錬金術",

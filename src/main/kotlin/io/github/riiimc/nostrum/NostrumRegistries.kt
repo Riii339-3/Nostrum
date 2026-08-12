@@ -91,6 +91,21 @@ object NostrumRegistries {
                 )
             }
         )
+    val DIRT_SWORD = ITEMS.register("dirt_sword", Supplier {
+        object : SwordItem(
+            Tiers.IRON,
+            Item.Properties().durability(128)
+        ) {
+            override fun isValidRepairItem(
+                stack: ItemStack,
+                repairCandidate: ItemStack
+            ): Boolean {
+                return repairCandidate.`is`(
+                    Items.DIRT
+                )
+            }
+        }
+    })
     val ALCHEMIST_CAULDRON_BLOCK = BLOCKS.register("alchemist_cauldron", Supplier { AlchemistCauldronBlock(
         BlockBehaviour.Properties.of())})
     val ALCHEMIST_CAULDRON_BE_TYPE = BE_TYPES.register("alchemist_cauldron", Supplier { BlockEntityType.Builder.of(::AlchemistCauldronBlockEntity, ALCHEMIST_CAULDRON_BLOCK.get()).build(null)})
@@ -240,6 +255,26 @@ object NostrumRegistries {
                 .add(ULTIMATE_ALCHEMICAL_MATERIAL)
                 .add(ALCHEMICAL_BREWING_MATERIAL)
                 .add(ALCHEMICAL_MIXING_MATERIAL)
+        )
+
+
+        FancyTabSections.addSection(
+            rl("nostrum"),  //identifier of the section
+            SectionColored(rl("tools")) //title to display in the "empty row" (banner) of the section
+                //by default the title will use the translation key `section.[namespace].[path]`, just as shown here
+                .setTitle(Component.translatable("section.nostrum.tools")) //background color of the "empty row" - ARGB
+                .setBannerColor(-0xe5e5d2) //text color - ARGB
+                .setTextColor(-0x44559a) //text shadow
+                .setTextShadow(true) //adds an item
+                .add(
+                    ItemStack(DIRT_SWORD.get()).apply {
+                        set(
+                            ALCHEMICAL_UPGRADE_COMPONENT,
+                            AlchemicalUpgradeComponent(
+                                rl("critical_attack")
+                            )
+                        )
+                    })
         )
 
         for (form in AlchemicalPotionForm.entries) {

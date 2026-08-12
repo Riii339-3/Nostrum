@@ -1,0 +1,27 @@
+{
+  "fluid_amount": 250,
+  "target": "c:tools",
+  "attributes": [],
+  "events": [
+    {
+      "event": "net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post",
+
+      "variables": {
+        "attacker": "event.getSource().getEntity()",
+        "stack": "attacker.getMainHandItem()",
+        "upgrade": "stack.get(ALCHEMICAL_UPGRADE_COMPONENT)"
+      },
+
+      "conditions": [
+        "attacker != null",
+        "upgrade != null",
+        "upgrade.getId() == ResourceLocation.fromNamespaceAndPath(\"nostrum\", \"critical_heal\")",
+        "Random.nextDouble() < 0.1"
+      ],
+
+      "actions": [
+        "attacker.setHealth(attacker.getHealth() + event.getNewDamage() / 2)"
+      ]
+    }
+  ]
+}
