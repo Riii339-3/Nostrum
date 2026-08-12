@@ -23,6 +23,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
     var mode = AlchemistCauldronMode.ALCHEMY
     val inventory = ResizeStackHandler(0)
     var fluid = FluidStack.EMPTY
+    var outputFluid = FluidStack.EMPTY
     var potionData: PotionData? = null
     var potionData2: PotionData? = null
 
@@ -37,6 +38,12 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             tag.put(
                 "Fluid",
                 fluid.save(provider)
+            )
+        }
+        if (!outputFluid.isEmpty) {
+            tag.put(
+                "OutputFluid",
+                outputFluid.save(provider)
             )
         }
 
@@ -100,6 +107,16 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             fluid = FluidStack.EMPTY
         }
 
+        if (tag.contains("OutputFluid")) {
+            val newFluid = FluidStack.parse(
+                provider,
+                tag.getCompound("OutputFluid")
+            ).orElse(FluidStack.EMPTY)
+            outputFluid = newFluid ?: FluidStack.EMPTY
+        } else {
+            outputFluid = FluidStack.EMPTY
+        }
+
         if (tag.contains("PotionData", Tag.TAG_COMPOUND.toInt())) {
             val potionTag = tag.getCompound("PotionData")
 
@@ -132,6 +149,39 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
         else {
             potionData = null
         }
+
+        if (tag.contains("PotionData2", Tag.TAG_COMPOUND.toInt())) {
+            val potionTag = tag.getCompound("PotionData2")
+
+            val effects = mutableListOf<MobEffectInstance>()
+
+            val effectsTag = potionTag.getList(
+                "Effects",
+                Tag.TAG_COMPOUND.toInt()
+            )
+
+            for (element in effectsTag) {
+                MobEffectInstance.CODEC
+                    .parse(NbtOps.INSTANCE, element)
+                    .result()
+                    .ifPresent(effects::add)
+            }
+
+            potionData2 = PotionData(
+                effects,
+                potionTag.getInt("Remaining"),
+                potionTag.getString("Form").let { formName ->
+                    try {
+                        AlchemicalPotionForm.valueOf(formName)
+                    } catch (e: IllegalArgumentException) {
+                        AlchemicalPotionForm.DRINK
+                    }
+                }
+            )
+        }
+        else {
+            potionData2 = null
+        }
     }
 
     fun createRecipeInput(): AlchemyRecipeInput {
@@ -156,6 +206,7 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
 
         val input = createRecipeInput()
 
+        /*
         println("=== CHECK RECIPE ===")
         println("state = ${input.state}")
         println("stacks = ${input.stacks}")
@@ -179,6 +230,8 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             println("  matches = ${recipe.matches(input, level)}")
         }
 
+         */
+
         return level.recipeManager
             .getRecipeFor(
                 NostrumRegistries.ALCHEMY_RECIPE.get(),
@@ -187,8 +240,5 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
             )
             .map { it.value }
             .orElse(null)
-    }
-    fun useRecipe() {
-
     }
 }

@@ -12,11 +12,6 @@ class AlchemistWandItem(properties: Properties): Item(properties) {
     override fun useOn(ctx: UseOnContext): InteractionResult {
         val level = ctx.level
         if (level.isClientSide) return super.useOn(ctx)
-        println(
-            "=== WAND USE ON === " +
-                    "side=${if (ctx.level.isClientSide) "CLIENT" else "SERVER"}, " +
-                    "shift=${ctx.player?.isShiftKeyDown}"
-        )
         if (!level.getBlockState(ctx.clickedPos).`is`(NostrumRegistries.ALCHEMIST_CAULDRON_BLOCK)) return super.useOn(ctx)
         val player = ctx.player ?: return InteractionResult.PASS
         val blockEntity = level.getBlockEntity(ctx.clickedPos)

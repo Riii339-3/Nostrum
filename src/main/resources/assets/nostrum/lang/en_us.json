@@ -5,7 +5,10 @@
   "block.nostrum.alchemist_cauldron.mode.infuse": "Change Mode to Alchemy Infusion",
   "block.nostrum.alchemist_cauldron.mode.entity": "Change Mode to Entity Alchemy",
   "block.nostrum.alchemist_cauldron.mode.potion_mixing": "Change Mode to Potion Mixing",
+  "block.nostrum.alchemist_cauldron.mode.upgrade": "Change Mode to Upgrade",
+
   "item.nostrum.alchemist_wand": "Alchemist Wand",
+
   "item.nostrum.alchemical_potion": "%sAlchemical Potion",
   "item.nostrum.alchemical_potion.form.drink": "",
   "item.nostrum.alchemical_potion.form.splash": "Splash ",

@@ -1,0 +1,28 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "minecraft:diamond"
+    }
+  ],
+  "fluid": {
+    "id": "nostrum:alchemical_upgrade",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:alchemical_brewing_material",
+    "count": 4
+  },
+  "resultFluid": {
+    "id": "nostrum:alchemical_upgrade",
+    "amount": 1000,
+    "components": {
+      "nostrum:alchemical_upgrade": {
+        "id": "nostrum:example_upgrade"
+      }
+    }
+  }
+}

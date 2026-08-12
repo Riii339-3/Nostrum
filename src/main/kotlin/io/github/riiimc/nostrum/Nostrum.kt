@@ -1,23 +1,14 @@
 package io.github.riiimc.nostrum
 
 import com.mojang.logging.LogUtils
+import io.github.riiimc.nostrum.client.AlchemicalPotionItemColor
+import io.github.riiimc.nostrum.content.upgrade.AlchemicalUpgradeManager
+import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.entity.ThrownItemRenderer
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
-import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.food.FoodProperties
-import net.minecraft.world.item.BlockItem
-import net.minecraft.world.item.CreativeModeTab
-import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator
-import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters
-import net.minecraft.world.item.CreativeModeTabs
-import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.bus.api.SubscribeEvent
@@ -28,16 +19,12 @@ import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.client.event.EntityRenderersEvent
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent
 import net.neoforged.neoforge.common.NeoForge
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
+import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
-import net.neoforged.neoforge.registries.DeferredBlock
-import net.neoforged.neoforge.registries.DeferredHolder
-import net.neoforged.neoforge.registries.DeferredItem
-import net.neoforged.neoforge.registries.DeferredRegister
 import org.slf4j.Logger
 import java.util.function.Consumer
-import java.util.function.Supplier
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Nostrum.MODID)
@@ -77,6 +64,11 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting")
     }
+    // あほなのでResourceManagerをModクラスに置く図
+    @SubscribeEvent
+    fun onAddReloadListener(event: AddReloadListenerEvent) {
+        event.addListener(UpgradeManage.instance)
+    }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
@@ -96,6 +88,14 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
                 ::ThrownItemRenderer
             )
         }
+        @JvmStatic
+        @SubscribeEvent
+        fun registerItemColors(event: RegisterColorHandlersEvent.Item) {
+            event.register(
+                AlchemicalPotionItemColor(),
+                NostrumRegistries.ALCHEMICAL_POTION.get()
+            )
+        }
     }
 
 
@@ -106,7 +106,7 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
         const val MODID: String = "nostrum"
 
         // Directly reference a slf4j logger
-        private val LOGGER: Logger = LogUtils.getLogger()
+        val LOGGER: Logger = LogUtils.getLogger()
 
 
         // Create a Deferred Register to hold Blocks which will all be registered under the "nostrum" namespace

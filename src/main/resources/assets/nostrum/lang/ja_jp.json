@@ -5,6 +5,8 @@
   "block.nostrum.alchemist_cauldron.mode.infuse": "レシピタイプを錬金注入に変更しました",
   "block.nostrum.alchemist_cauldron.mode.entity": "レシピタイプを生命錬金術に変更しました",
   "block.nostrum.alchemist_cauldron.mode.potion_mixing": "レシピタイプをポーション混成に変更しました",
+  "block.nostrum.alchemist_cauldron.mode.upgrade": "レシピタイプを錬金強化に変更しました",
+
 
   "item.nostrum.alchemist_wand": "錬金術師の杖",
   "item.nostrum.alchemical_potion": "錬金%sポーション",

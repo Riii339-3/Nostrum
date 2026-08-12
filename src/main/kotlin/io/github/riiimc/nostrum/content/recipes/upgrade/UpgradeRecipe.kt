@@ -1,28 +1,14 @@
-package io.github.riiimc.nostrum.content.recipes.alchemy
+package io.github.riiimc.nostrum.content.recipes.upgrade
 
-import io.github.riiimc.nostrum.NostrumRegistries
-import net.minecraft.core.HolderLookup
-import net.minecraft.core.NonNullList
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
-import net.minecraft.world.item.crafting.Recipe
-import net.minecraft.world.item.crafting.RecipeSerializer
-import net.minecraft.world.item.crafting.RecipeType
-import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.state.BlockState
-import net.neoforged.neoforge.fluids.FluidStack
-
-
-class AlchemyRecipe(
-    val inputState: BlockState,
+/*
+class UpgradeRecipe(
     val inputItems: List<Ingredient>,
     val inputFluid: FluidStack,
-    val result: ItemStack,
-    val resultFluid: FluidStack
+    val result: AlchemicalUpgrade
 ) : Recipe<AlchemyRecipeInput> {
 
     init {
-        require(!result.isEmpty || !resultFluid.isEmpty) {
+        require(!result.) {
             "AlchemyRecipe must have at least one output: result or resultFluid"
         }
     }
@@ -41,9 +27,6 @@ class AlchemyRecipe(
         input: AlchemyRecipeInput,
         level: Level
     ): Boolean {
-        if (inputState != input.state) {
-            return false
-        }
 
         if (inputItems.size != input.stacks.size) {
             return false
@@ -98,13 +81,6 @@ class AlchemyRecipe(
     override fun getSerializer(): RecipeSerializer<*> {
         return NostrumRegistries.ALCHEMY_RECIPE_SERIALIZER.get()
     }
-
-    fun assembleAlchemy(
-        input: AlchemyRecipeInput
-    ): AlchemyRecipeData {
-        return AlchemyRecipeData(
-            result = result.copy(),
-            resultFluid = resultFluid.copy()
-        )
-    }
 }
+
+ */

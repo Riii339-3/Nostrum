@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "nostrum:item/alchemical_potion/drink",
+    "layer1": "nostrum:item/alchemical_potion/liquid"
+  }
+}

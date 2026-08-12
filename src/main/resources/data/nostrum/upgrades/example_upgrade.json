@@ -1,0 +1,18 @@
+{
+  "fluid_amount": 250,
+  "target": "c:tools",
+  "attributes": [],
+  "events": [
+    {
+      "event": "net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Post",
+      "conditions": [
+        "event.getSource().getEntity() != null",
+        "event.getSource().getEntity().getMainHandItem().get(ALCHEMICAL_UPGRADE_COMPONENT) != null",
+        "event.getSource().getEntity().getMainHandItem().get(ALCHEMICAL_UPGRADE_COMPONENT).getId() == ResourceLocation.fromNamespaceAndPath(\"nostrum\", \"example_upgrade\")"
+      ],
+      "actions": [
+        "event.getSource().getEntity().setHealth(event.getSource().getEntity().getHealth() + event.getNewDamage() / 2)"
+      ]
+    }
+  ]
+}

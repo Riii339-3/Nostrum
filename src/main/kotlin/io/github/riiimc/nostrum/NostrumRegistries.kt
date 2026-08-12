@@ -5,34 +5,26 @@ import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEnti
 import io.github.riiimc.nostrum.content.blocks.AlchemistCauldronBlock
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionForm
+import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent
 import io.github.riiimc.nostrum.content.entities.ThrownAlchemicalPotion
+import io.github.riiimc.nostrum.content.fluids.AlchemicalUpgradeFluidType
 import io.github.riiimc.nostrum.content.items.AlchemicalPotionItem
 import io.github.riiimc.nostrum.content.items.AlchemistWandItem
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipeSerializer
-import net.mcexpanded.fancytabsections.FTSExampleMod.FTSExampleModItems
+import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvent
+import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvents
 import net.mcexpanded.fancytabsections.FancyTabSections
 import net.mcexpanded.fancytabsections.Section.SectionColored
-import net.mcexpanded.fancytabsections.creativetab.ConglomerateOfItems.RegistryDependentEntry
-import net.minecraft.core.Holder
-import net.minecraft.core.HolderLookup.RegistryLookup
-import net.minecraft.core.HolderSet
-import net.minecraft.core.RegistryAccess
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
-import net.minecraft.world.item.BlockItem
-import net.minecraft.world.item.CreativeModeTab
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
-import net.minecraft.world.item.Rarity
+import net.minecraft.world.item.*
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.crafting.RecipeSerializer
@@ -40,8 +32,10 @@ import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.neoforged.bus.api.IEventBus
+import net.neoforged.neoforge.fluids.BaseFlowingFluid
+import net.neoforged.neoforge.fluids.FluidType
 import net.neoforged.neoforge.registries.DeferredRegister
-import java.util.function.Function
+import net.neoforged.neoforge.registries.NeoForgeRegistries
 import java.util.function.Supplier
 
 
@@ -59,6 +53,31 @@ object NostrumRegistries {
     val ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, Nostrum.MODID)
     val ALCHEMY_RECIPE_SERIALIZER: Supplier<RecipeSerializer<AlchemyRecipe>> =
         RECIPE_SERIALIZERS.register("alchemy", Supplier { AlchemyRecipeSerializer() })
+    val FLUID_TYPES: DeferredRegister<FluidType> =
+        DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Nostrum.MODID)
+    val FLUIDS = DeferredRegister.create(Registries.FLUID, Nostrum.MODID)
+
+    val ALCHEMICAL_UPGRADE_FLUID_TYPE = FLUID_TYPES.register("alchemical_upgrade_type", Supplier { AlchemicalUpgradeFluidType(FluidType.Properties.create().viscosity(100).temperature(100).density(100).lightLevel(7))})
+    val ALCHEMICAL_UPGRADE_FLUID = FLUIDS.register("alchemical_upgrade", Supplier { BaseFlowingFluid.Source(ALCHEMICAL_FLUID_PROPERTIES)})
+    val ALCHEMICAL_UPGRADE_FLUID_FLOWING = FLUIDS.register("alchemical_upgrade_flowing", Supplier { BaseFlowingFluid.Flowing(ALCHEMICAL_FLUID_PROPERTIES)})
+
+    val ALCHEMICAL_UPGRADE_BUCKET = ITEMS.register("alchemical_upgrade_bucket", Supplier { BucketItem(ALCHEMICAL_UPGRADE_FLUID.get(), Item.Properties().stacksTo(1).rarity(
+        Rarity.RARE))})
+    val ALCHEMICAL_FLUID_PROPERTIES: BaseFlowingFluid.Properties = BaseFlowingFluid.Properties(
+        ALCHEMICAL_UPGRADE_FLUID_TYPE,
+        ALCHEMICAL_UPGRADE_FLUID,
+        ALCHEMICAL_UPGRADE_FLUID_FLOWING
+    )
+        .explosionResistance(100f)
+        .bucket(ALCHEMICAL_UPGRADE_BUCKET) //                    .block(MANA_BLOCK)
+        .levelDecreasePerBlock(1)
+        .tickRate(20)
+
+    val ALCHEMICAL_UPGRADE_COMPONENT = DATA_COMPONENTS.register("alchemical_upgrade", Supplier {
+        DataComponentType.builder<AlchemicalUpgradeComponent>()
+            .persistent(AlchemicalUpgradeComponent.CODEC)
+            .networkSynchronized(AlchemicalUpgradeComponent.STREAM_CODEC)
+            .build() })
 
     val ALCHEMY_RECIPE: Supplier<RecipeType<AlchemyRecipe>> =
         RECIPE_TYPES.register<RecipeType<AlchemyRecipe>>(
@@ -133,6 +152,22 @@ object NostrumRegistries {
                 .build()
         }
     )
+    val NOSTRUM_UPGRADES = CREATIVE_TABS.register(
+        "alchemical_upgrades",
+        Supplier {
+            CreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.alchemical_upgrades"))
+                .icon {
+                    ItemStack(ALCHEMICAL_POTION.get()).apply {
+                        set(
+                            DataComponents.POTION_CONTENTS,
+                            PotionContents(Potions.HEALING)
+                        )
+                    }
+                }
+                .build()
+        }
+    )
 
     val BASIC_ALCHEMICAL_MATERIAL = ITEMS.register("basic_alchemical_material", Supplier {
         Item(Item.Properties().stacksTo(64))
@@ -174,6 +209,8 @@ object NostrumRegistries {
         BE_TYPES.register(bus)
         RECIPE_TYPES.register(bus)
         RECIPE_SERIALIZERS.register(bus)
+        FLUID_TYPES.register(bus)
+        FLUIDS.register(bus)
 
         FancyTabSections.addSection(
             rl("nostrum"),  //identifier of the section
@@ -232,6 +269,25 @@ object NostrumRegistries {
             )
         }
 
+        registerUpgradeEvents()
+    }
 
+    fun registerUpgradeEvents() {
+        AlchemicalEvents.register(
+            rl("heal")
+        ) { player, amount ->
+            player.heal(amount.toFloat())
+        }
+        AlchemicalEvents.register(
+            rl("critical")
+        ) { player, amount ->
+            // 処理
+        }
+
+        AlchemicalEvents.register(
+            rl("custom")
+        ) { player, amount ->
+            // 処理
+        }
     }
 }

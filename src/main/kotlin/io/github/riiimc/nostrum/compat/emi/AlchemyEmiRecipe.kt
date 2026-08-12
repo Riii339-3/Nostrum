@@ -2,16 +2,14 @@ package io.github.riiimc.nostrum.compat.emi
 
 import dev.emi.emi.api.recipe.EmiRecipe
 import dev.emi.emi.api.recipe.EmiRecipeCategory
-import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
-import io.github.riiimc.nostrum.Nostrum
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import net.minecraft.resources.ResourceLocation
-import kotlin.math.roundToInt
 import kotlin.math.cos
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class AlchemyEmiRecipe(
@@ -24,8 +22,17 @@ class AlchemyEmiRecipe(
 
     private val fluid: EmiStack =
         EmiStack.of(recipe.inputFluid.fluid)
+
     private val output: List<EmiStack> =
-        listOf(EmiStack.of(recipe.result))
+        buildList {
+            if (!recipe.result.isEmpty) {
+                add(EmiStack.of(recipe.result))
+            }
+
+            if (!recipe.resultFluid.isEmpty) {
+                add(EmiStack.of(recipe.resultFluid.fluid))
+            }
+        }
 
     override fun getCategory(): EmiRecipeCategory {
         return NostrumEmiPlugin.MY_CATEGORY
@@ -45,16 +52,12 @@ class AlchemyEmiRecipe(
 
     override fun getDisplayWidth(): Int {
         return when {
-            //input.size <= 8 -> 76
-            //input.size <= 12 -> 88
             else -> 100
         }
     }
 
     override fun getDisplayHeight(): Int {
         return when {
-            //input.size <= 8 -> 40
-            //input.size <= 12 -> 48
             else -> 120
         }
     }
@@ -63,16 +66,22 @@ class AlchemyEmiRecipe(
         val width = displayWidth
         val height = displayHeight
 
-        // Item circle center
         val centerX = width / 2.0
         val centerY = (height - 20) / 2.0
 
-        // Output
-        widgets.addSlot(
-            output[0],
-            centerX.roundToInt() - 8,
-            centerY.roundToInt() - 8
-        ).recipeContext(this)
+        // Outputs
+        if (output.isNotEmpty()) {
+            val outputStartX =
+                centerX.roundToInt() - (output.size * 9)
+
+            output.forEachIndexed { index, emiStack ->
+                widgets.addSlot(
+                    emiStack,
+                    outputStartX + index * 18,
+                    centerY.roundToInt() - 8
+                ).recipeContext(this)
+            }
+        }
 
         // Item inputs
         if (input.isNotEmpty()) {
@@ -102,10 +111,12 @@ class AlchemyEmiRecipe(
         }
 
         // Fluid input
-        widgets.addSlot(
-            fluid,
-            centerX.roundToInt() - 8,
-            height - 18
-        )
+        if (!fluid.isEmpty) {
+            widgets.addSlot(
+                fluid,
+                centerX.roundToInt() - 8,
+                height - 18
+            )
+        }
     }
 }

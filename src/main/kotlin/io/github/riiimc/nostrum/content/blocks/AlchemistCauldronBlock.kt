@@ -1,26 +1,34 @@
 package io.github.riiimc.nostrum.content.blocks
 
+import io.github.riiimc.nostrum.Nostrum
 import io.github.riiimc.nostrum.NostrumRegistries
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blockentities.PotionData
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionForm
+import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent
 import io.github.riiimc.nostrum.content.recipes.AlchemistCauldronMode
+import io.github.riiimc.nostrum.content.upgrade.AlchemicalUpgradeManager
+import io.github.riiimc.nostrum.content.upgrade.AttributeData
+import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import io.github.riiimc.nostrum.utils.NostrumTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.item.component.ItemAttributeModifiers
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -34,7 +42,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
-import java.util.Optional
+import java.util.*
 
 class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityBlock {
     override fun newBlockEntity(p0: BlockPos, p1: BlockState): BlockEntity {
@@ -108,6 +116,8 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             return ItemInteractionResult.SUCCESS
                         }
 
+                        if (!blockEntity.outputFluid.isEmpty) return ItemInteractionResult.SUCCESS
+
                         if (recipe == null) {
                             for (i in 0 until blockEntity.inventory.slots) {
                                 blockEntity.inventory
@@ -122,10 +132,12 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
 
                         val input = blockEntity.createRecipeInput()
 
-                        val resultStack = recipe.assemble(
-                            input,
-                            level.registryAccess()
+                        val resultData = recipe.assembleAlchemy(
+                            input
                         )
+
+                        val resultStack = resultData.result
+                        val resultFluid = resultData.resultFluid
 
                         // 材料を消費
                         for (i in 0 until blockEntity.inventory.slots) {
@@ -142,20 +154,25 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                         }
 
                         // 結果をプレイヤーへ
-                        val itemEntity = ItemEntity(
-                            level,
-                            pos.x + 0.5,
-                            pos.y + 1.2,
-                            pos.z + 0.5,
-                            resultStack
-                        )
+                        if (!resultStack.isEmpty) {
+                            val itemEntity = ItemEntity(
+                                level,
+                                pos.x + 0.5,
+                                pos.y + 1.2,
+                                pos.z + 0.5,
+                                resultStack
+                            )
 
-                        itemEntity.setDefaultPickUpDelay()
+                            itemEntity.setDefaultPickUpDelay()
 
-                        level.addFreshEntity(itemEntity)
+                            level.addFreshEntity(itemEntity)
+                        }
 
-
+                        if (!resultFluid.isEmpty) {
+                            blockEntity.outputFluid = resultFluid
+                        }
                     }
+
                     AlchemistCauldronMode.POTION -> {
                         if (level.isClientSide) {
                             return ItemInteractionResult.SUCCESS
@@ -245,9 +262,11 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                                 item.`is`(NostrumTags.LINGERING) -> {
                                     form = AlchemicalPotionForm.LINGERING
                                 }
+
                                 item.`is`(NostrumTags.AEROSOL) -> {
                                     form = AlchemicalPotionForm.AEROSOL
                                 }
+
                                 item.`is`(NostrumTags.SPRAY) -> {
                                     form = AlchemicalPotionForm.SPRAY
                                 }
@@ -285,7 +304,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     }
 
                     AlchemistCauldronMode.POTION_MIXING -> {
-                        var potionData = blockEntity.potionData
+                        val potionData = blockEntity.potionData
                         val potionData2 = blockEntity.potionData2
 
                         if (potionData == null || potionData2 == null) return ItemInteractionResult.SUCCESS
@@ -295,8 +314,7 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             if (item.`is`(NostrumTags.MIXING_MATERIAL)) {
                                 mixingMaterial++
                                 blockEntity.inventory.setStackInSlot(i, ItemStack.EMPTY)
-                            }
-                            else {
+                            } else {
                                 blockEntity.inventory.compact()
                                 blockEntity.setChanged()
                                 potionFatal()
@@ -362,13 +380,67 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             blockEntity.inventory.compact()
                             blockEntity.setChanged()
                             return ItemInteractionResult.SUCCESS
-                        }
-                        else {
+                        } else {
                             potionFatal()
                             blockEntity.inventory.compact()
                             blockEntity.setChanged()
                             return ItemInteractionResult.SUCCESS
                         }
+                    }
+
+                    AlchemistCauldronMode.UPGRADE -> {
+                        val inventory = blockEntity.inventory
+                        val fluid = blockEntity.fluid
+
+                        if (
+                            !fluid.has(NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT) ||
+                            inventory.slots != 1
+                        ) {
+                            return ItemInteractionResult.SUCCESS
+                        }
+
+                        val component =
+                            fluid.get(NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT)
+                                ?: return ItemInteractionResult.SUCCESS
+
+                        val upgrade =
+                            UpgradeManage.instance.get(component.id)
+                                ?: return ItemInteractionResult.SUCCESS
+
+                        val targetItem = inventory.getStackInSlot(0)
+
+                        if (!targetItem.`is`(upgrade.target)) {
+                            return ItemInteractionResult.SUCCESS
+                        }
+
+                        if (fluid.amount < upgrade.fluidAmount) {
+                            return ItemInteractionResult.SUCCESS
+                        }
+
+                        // Upgrade本体を適用
+                        applyUpgrade(
+                            targetItem,
+                            component.id
+                        )
+
+                        // 「このUpgradeが付いている」というIDだけ保存
+                        targetItem.set(
+                            NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
+                            AlchemicalUpgradeComponent(component.id)
+                        )
+
+                        inventory.setStackInSlot(0, targetItem)
+
+                        // 液体を消費
+                        fluid.shrink(upgrade.fluidAmount)
+
+                        if (fluid.isEmpty) {
+                            blockEntity.fluid = FluidStack.EMPTY
+                        }
+
+                        blockEntity.setChanged()
+
+                        return ItemInteractionResult.SUCCESS
                     }
                 }
 
@@ -447,10 +519,6 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     handItem.shrink(1)
                     return ItemInteractionResult.SUCCESS
                 }
-                val handler = handItem.getCapability(
-                    Capabilities.FluidHandler.ITEM,
-                    null
-                )
                 if (handItem.`is`(NostrumRegistries.ALCHEMICAL_POTION.get())) {
                     val potions = handItem.get(
                         DataComponents.POTION_CONTENTS
@@ -483,79 +551,23 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                     player.getItemInHand(hand).shrink(1)
                     return ItemInteractionResult.SUCCESS
                 }
-                if (handler != null) {
 
+                val handler = handItem.getCapability(
+                    Capabilities.FluidHandler.ITEM,
+                    null
+                )
+                if (handler != null) {
                     val contained = handler.getFluidInTank(0)
 
-                    if (contained.isEmpty) {
-                        // ItemStack が空 → BlockEntity から回収
-                        val stored = blockEntity.fluid
-
-                        if (stored.isEmpty) {
-                            return super.useItemOn(
-                                stack,
-                                state,
-                                level,
-                                pos,
-                                player,
-                                hand,
-                                result
-                            )
-                        }
-
-                        val amount = handler.fill(
-                            stored.copy(),
-                            IFluidHandler.FluidAction.SIMULATE
-                        )
-
-                        if (amount <= 0) {
-                            return super.useItemOn(
-                                stack,
-                                state,
-                                level,
-                                pos,
-                                player,
-                                hand,
-                                result
-                            )
-                        }
-
-                        val toFill = stored.copy()
-                        toFill.amount = amount
-
-                        val filled = handler.fill(
-                            toFill,
-                            IFluidHandler.FluidAction.EXECUTE
-                        )
-
-                        if (filled <= 0) {
-                            return super.useItemOn(
-                                stack,
-                                state,
-                                level,
-                                pos,
-                                player,
-                                hand,
-                                result
-                            )
-                        }
-
-                        stored.shrink(filled)
-
-                        if (stored.amount <= 0) {
-                            blockEntity.fluid = FluidStack.EMPTY
-                        }
-
-                        player.setItemInHand(hand, handler.container)
-                        blockEntity.setChanged()
-
-                        return ItemInteractionResult.SUCCESS
-                    } else {
-                        // ItemStack に Fluid が入っている → BlockEntity へ注入
-                        val capacity = 2000
+                    // =========================================================
+                    // 容器 → BlockEntity
+                    // =========================================================
+                    if (!contained.isEmpty) {
                         val current = blockEntity.fluid
+                        val capacity = 2000
 
-                        if (!current.isEmpty &&
+                        if (
+                            !current.isEmpty &&
                             !FluidStack.isSameFluidSameComponents(current, contained)
                         ) {
                             return super.useItemOn(
@@ -583,7 +595,10 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             )
                         }
 
-                        val drainAmount = minOf(contained.amount, remaining)
+                        val drainAmount = minOf(
+                            contained.amount,
+                            remaining
+                        )
 
                         val drained = handler.drain(
                             drainAmount,
@@ -602,13 +617,133 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                             )
                         }
 
+                        // =========================================================
+                        // バケツのUpgrade Component → FluidStack
+                        // =========================================================
+                        handItem.get(
+                            NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT
+                        )?.let { component ->
+                            drained.set(
+                                NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
+                                component
+                            )
+                        }
+
                         if (current.isEmpty) {
                             blockEntity.fluid = drained.copy()
                         } else {
                             current.grow(drained.amount)
                         }
 
-                        player.setItemInHand(hand, handler.container)
+                        player.setItemInHand(
+                            hand,
+                            handler.container
+                        )
+
+                        blockEntity.setChanged()
+
+                        return ItemInteractionResult.SUCCESS
+                    }
+                    // =========================================================
+                    // BlockEntity → 容器
+                    // outputFluid を優先
+                    // =========================================================
+                    else {
+                        val useOutput = !blockEntity.outputFluid.isEmpty
+
+                        val stored = if (useOutput) {
+                            blockEntity.outputFluid.copy()
+                        } else {
+                            blockEntity.fluid.copy()
+                        }
+
+                        if (stored.isEmpty) {
+                            return super.useItemOn(
+                                stack,
+                                state,
+                                level,
+                                pos,
+                                player,
+                                hand,
+                                result
+                            )
+                        }
+
+                        // 容器に入る量を確認
+                        val amount = handler.fill(
+                            stored.copy(),
+                            IFluidHandler.FluidAction.SIMULATE
+                        )
+
+                        if (amount <= 0) {
+                            return super.useItemOn(
+                                stack,
+                                state,
+                                level,
+                                pos,
+                                player,
+                                hand,
+                                result
+                            )
+                        }
+
+                        val toFill = stored.copy()
+                        toFill.amount = amount
+
+                        // 実際に容器へ入れる
+                        val filled = handler.fill(
+                            toFill,
+                            IFluidHandler.FluidAction.EXECUTE
+                        )
+
+                        if (filled <= 0) {
+                            return super.useItemOn(
+                                stack,
+                                state,
+                                level,
+                                pos,
+                                player,
+                                hand,
+                                result
+                            )
+                        }
+
+                        // =========================================================
+                        // FluidStackのComponentを容器へコピー
+                        // =========================================================
+                        val container = handler.container
+
+                        toFill.get(
+                            NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT
+                        )?.let { component ->
+                            container.set(
+                                NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
+                                component
+                            )
+                        }
+
+                        // =========================================================
+                        // BE側からFluidを減らす
+                        // =========================================================
+                        if (useOutput) {
+                            blockEntity.outputFluid.shrink(filled)
+
+                            if (blockEntity.outputFluid.amount <= 0) {
+                                blockEntity.outputFluid = FluidStack.EMPTY
+                            }
+                        } else {
+                            blockEntity.fluid.shrink(filled)
+
+                            if (blockEntity.fluid.amount <= 0) {
+                                blockEntity.fluid = FluidStack.EMPTY
+                            }
+                        }
+
+                        player.setItemInHand(
+                            hand,
+                            container
+                        )
+
                         blockEntity.setChanged()
 
                         return ItemInteractionResult.SUCCESS
@@ -650,6 +785,74 @@ class AlchemistCauldronBlock(properties: Properties): Block(properties), EntityB
                 0.0
             )}
     }
+
+    fun applyUpgrade(
+        stack: ItemStack,
+        id: ResourceLocation
+    ) {
+        val upgrade = UpgradeManage.instance.get(id)
+            ?: run {
+                Nostrum.LOGGER.warn(
+                    "Unknown alchemical upgrade: {}",
+                    id
+                )
+                return
+            }
+
+        for (attribute in upgrade.attributes) {
+            applyAttribute(
+                stack,
+                id,
+                attribute
+            )
+        }
+    }
+
+    fun applyAttribute(
+        stack: ItemStack,
+        upgradeId: ResourceLocation,
+        data: AttributeData
+    ) {
+        val attributeKey = data.attribute.key
+            ?: error("Attribute has no registry key")
+
+        val modifierId = ResourceLocation.fromNamespaceAndPath(
+            "nostrum",
+            "alchemical/${upgradeId.namespace}/${upgradeId.path}/${attributeKey.location().path}"
+        )
+
+        val modifier = AttributeModifier(
+            modifierId,
+            data.amount,
+            data.operation
+        )
+
+        val current = stack.getOrDefault(
+            DataComponents.ATTRIBUTE_MODIFIERS,
+            ItemAttributeModifiers.EMPTY
+        )
+
+        val modifiers = current.modifiers()
+            .filterNot { entry ->
+                entry.modifier().id == modifierId
+            }
+            .toMutableList()
+
+        modifiers += ItemAttributeModifiers.Entry(
+            data.attribute,
+            modifier,
+            data.equipmentSlot
+        )
+
+        stack.set(
+            DataComponents.ATTRIBUTE_MODIFIERS,
+            ItemAttributeModifiers(
+                modifiers,
+                true
+            )
+        )
+    }
+
     companion object {
         private val SHAPE = Shapes.or(
             // 底
