@@ -1,14 +1,18 @@
 package io.github.riiimc.nostrum.content.upgrade.custom
 
 import io.github.riiimc.nostrum.NostrumRegistries
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.damagesource.DamageSource
 import net.neoforged.bus.api.Event
+import java.lang.reflect.Field
 import java.lang.reflect.Modifier
+import java.util.Random
 
 
 object AlchemicalExpression {
-    private val random = java.util.Random()
+    private val random = Random()
 
     private fun invoke(
         target: Any,
@@ -16,8 +20,7 @@ object AlchemicalExpression {
         args: List<Any?>
     ): Any? {
         val clazz =
-            if (target is Class<*>) target
-            else target.javaClass
+            target as? Class<*> ?: target.javaClass
 
         val method = clazz.methods
             .firstOrNull { method ->
@@ -75,7 +78,7 @@ object AlchemicalExpression {
                 Short::class.java ->
                     value.toShort()
 
-                java.lang.Integer.TYPE,
+                Integer.TYPE,
                 Int::class.java ->
                     value.toInt()
 
@@ -148,7 +151,7 @@ object AlchemicalExpression {
     private fun findField(
         clazz: Class<*>,
         name: String
-    ): java.lang.reflect.Field {
+    ): Field {
         return clazz.getField(name)
             .apply {
                 isAccessible = true
@@ -160,8 +163,7 @@ object AlchemicalExpression {
         name: String
     ): Any? {
         val clazz =
-            if (target is Class<*>) target
-            else target.javaClass
+            target as? Class<*> ?: target.javaClass
 
         val field = findField(clazz, name)
 
@@ -626,7 +628,7 @@ object AlchemicalExpression {
     private fun findArithmetic(
         expression: String
     ): Arithmetic? {
-        var depth = 0
+        var depth: Int
 
         // + - より先に * / %
         val operators = listOf(
@@ -777,9 +779,9 @@ object AlchemicalExpression {
             "Random" to random,
 
             "ResourceKey" to
-                    net.minecraft.resources.ResourceKey::class.java,
+                    ResourceKey::class.java,
             "Registries" to
-                    net.minecraft.core.registries.Registries::class.java,
+                    Registries::class.java,
             "DamageSource" to DamageSource::class.java
         )
     }

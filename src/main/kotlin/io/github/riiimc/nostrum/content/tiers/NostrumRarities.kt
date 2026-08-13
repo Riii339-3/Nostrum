@@ -9,10 +9,10 @@ import java.util.function.UnaryOperator
 
 object NostrumRarities {
     @JvmField
-    val EPILOGUE_ENUM_PROXY : EnumProxy<Rarity> = EnumProxy<Rarity>(
+    val EPILOGUE_ENUM_PROXY : EnumProxy<Rarity> = EnumProxy(
         Rarity::class.java,
         -1,
         "nostrum:epilogue",
-        UnaryOperator { style: Style -> style.withFont(rl("epilogue_move")) } as UnaryOperator<Style?>
+        UnaryOperator { style: Style -> style.withFont(rl("epilogue_move")) }
     )
 }

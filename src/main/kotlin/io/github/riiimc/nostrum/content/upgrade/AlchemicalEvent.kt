@@ -3,13 +3,7 @@ package io.github.riiimc.nostrum.content.upgrade
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import io.netty.buffer.ByteBuf
-import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
 import net.neoforged.bus.api.Event
-import java.util.Optional
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent
 
 data class AlchemicalEvent(
     val eventClass: Class<out Event>,

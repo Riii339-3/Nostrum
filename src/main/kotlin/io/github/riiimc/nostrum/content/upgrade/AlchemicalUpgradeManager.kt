@@ -11,9 +11,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
 import net.minecraft.util.profiling.ProfilerFiller
 import net.neoforged.bus.api.Event
-import net.neoforged.bus.api.EventPriority
 import net.neoforged.neoforge.common.NeoForge
-import java.util.function.Consumer
 
 class AlchemicalUpgradeManager : SimpleJsonResourceReloadListener(
     GsonBuilder().create(),

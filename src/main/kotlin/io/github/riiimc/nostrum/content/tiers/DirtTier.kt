@@ -15,5 +15,5 @@ object DirtTier : Tier {
         return Tiers.IRON.incorrectBlocksForDrops
     }
     override fun getEnchantmentValue() = Tiers.IRON.enchantmentValue
-    override fun getRepairIngredient() = Ingredient.of(Items.DIRT)
+    override fun getRepairIngredient(): Ingredient = Ingredient.of(Items.DIRT)
 }
