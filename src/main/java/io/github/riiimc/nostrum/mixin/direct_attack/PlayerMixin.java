@@ -1,9 +1,8 @@
-package io.github.riiimc.nostrum.mixin.direct;
+package io.github.riiimc.nostrum.mixin.direct_attack;
 
 import io.github.riiimc.nostrum.Nostrum;
 import io.github.riiimc.nostrum.NostrumRegistries;
 import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent;
-import io.github.riiimc.nostrum.content.upgrade.AlchemicalUpgradeManager;
 import io.github.riiimc.nostrum.mixinitf.LivingEntityMixinItf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;

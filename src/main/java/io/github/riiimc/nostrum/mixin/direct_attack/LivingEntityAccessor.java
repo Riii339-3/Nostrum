@@ -1,4 +1,4 @@
-package io.github.riiimc.nostrum.mixin.direct;
+package io.github.riiimc.nostrum.mixin.direct_attack;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.LivingEntity;
