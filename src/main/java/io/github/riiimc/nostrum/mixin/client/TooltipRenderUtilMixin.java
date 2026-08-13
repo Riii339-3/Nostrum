@@ -1,6 +1,6 @@
-package io.github.riiimc.nostrum.mixin;
+package io.github.riiimc.nostrum.mixin.client;
 
-import io.github.riiimc.nostrum.client.NostrumRenderTypes;
+import io.github.riiimc.nostrum.client.shaders.NostrumRenderTypes;
 import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;

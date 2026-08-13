@@ -1,4 +1,4 @@
-package io.github.riiimc.nostrum.client
+package io.github.riiimc.nostrum.client.shaders
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import net.minecraft.client.renderer.ShaderInstance
@@ -6,8 +6,6 @@ import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.client.event.RegisterShadersEvent
 import org.joml.Vector3f
 import java.io.IOException
-import java.util.function.Consumer
-
 
 
 object NostrumShaders {

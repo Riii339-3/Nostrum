@@ -1,22 +1,13 @@
-package io.github.riiimc.nostrum.mixin;
+package io.github.riiimc.nostrum.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.github.riiimc.nostrum.NostrumConfig;
 import io.github.riiimc.nostrum.NostrumRegistries;
-import io.github.riiimc.nostrum.client.NostrumRenderTypes;
+import io.github.riiimc.nostrum.client.shaders.NostrumRenderTypes;
 import io.github.riiimc.nostrum.content.tiers.NostrumRarities;
-import io.github.riiimc.nostrum.mixinitf.GuiGraphicsTooltipExtension;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 

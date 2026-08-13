@@ -2,6 +2,7 @@ package io.github.riiimc.nostrum
 
 import io.github.riiimc.nostrum.Nostrum.Companion.rl
 import io.github.riiimc.nostrum.compat.NostrumCompat
+import io.github.riiimc.nostrum.compat.ageratum.NostrumAgeratumRegistries
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blocks.AlchemistCauldronBlock
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
@@ -131,10 +132,11 @@ object NostrumRegistries {
                 .attributes(
                     SwordItem.createAttributes(
                         Tiers.IRON,
-                        3,
+                        2,
                         -2.4f
                     )
                 )
+                .component(ALCHEMICAL_UPGRADE_COMPONENT, AlchemicalUpgradeComponent(rl("dirt_critical")))
         ) {
             override fun isValidRepairItem(
                 stack: ItemStack,
@@ -268,18 +270,27 @@ object NostrumRegistries {
 
         NostrumCompat.addonRegistry(bus)
 
-        FancyTabSections.addSection(
-            rl("nostrum"),  //identifier of the section
-            SectionColored(rl("alchemy")) //title to display in the "empty row" (banner) of the section
-                //by default the title will use the translation key `section.[namespace].[path]`, just as shown here
-                .setTitle(Component.translatable("section.nostrum.alchemy")) //background color of the "empty row" - ARGB
-                .setBannerColor(-0xe5e5d2) //text color - ARGB
-                .setTextColor(-0x44559a) //text shadow
-                .setTextShadow(true) //adds an item
+        val nostrumSection = SectionColored(rl("alchemy"))
+            .setTitle(Component.translatable("section.nostrum.alchemy"))
+            .setBannerColor(-0xe5e5d2)
+            .setTextColor(-0x44559a)
+            .setTextShadow(true)
+            .setDisplayItem {
+                ItemStack(ALCHEMIST_CAULDRON_ITEM.get())
+            }
 
-                .add(ALCHEMIST_CAULDRON_ITEM) //adds a modded item, using the DeferredItem<Item>
-                .add(ALCHEMIST_WAND) //adds an ItemStack
+        FancyTabSections.addSection(
+            rl("nostrum"),
+            nostrumSection
         )
+
+        if (NostrumCompat.isModLoaded("ageratum")) {
+            nostrumSection.add(NostrumAgeratumRegistries.GUIDE_BOOK)
+        }
+
+        nostrumSection
+            .add(ALCHEMIST_CAULDRON_ITEM)
+            .add(ALCHEMIST_WAND)
 
         FancyTabSections.addSection(
             rl("nostrum"),  //identifier of the section
@@ -307,18 +318,7 @@ object NostrumRegistries {
                 .setBannerColor(-0xe5e5d2)
                 .setTextColor(-0x44559a)
                 .setTextShadow(true)
-                .add(
-                    Supplier {
-                        ItemStack(NostrumRegistries.DIRT_SWORD.get()).apply {
-                            set(
-                                NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
-                                AlchemicalUpgradeComponent(
-                                    rl("dirt_critical")
-                                )
-                            )
-                        }
-                    }
-                )
+                .add(DIRT_SWORD)
         )
 
         for (form in AlchemicalPotionForm.entries) {

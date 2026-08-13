@@ -55,7 +55,7 @@
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion": "Inversion",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion.description": "Swaps the player's attack and armor values.",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack": "Direct Attack",
-  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "Damage is applied directly to the opponent’s health.\nThe damage dealt is 25% of the attack power.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "Damage is applied directly to the opponent’s health.\nThe damage dealt is 20% of the attack power.",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "Dirt Power",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "There is a 5% chance of a Earth Critical hit occurring,\nwhich multiplies damage dealt by 10",
 

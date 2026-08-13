@@ -15,7 +15,7 @@ import net.neoforged.neoforge.common.NeoForge
 
 class AlchemicalUpgradeManager : SimpleJsonResourceReloadListener(
     GsonBuilder().create(),
-    "upgrades"
+    "nostrum/upgrades"
 ) {
     private val upgrades =
         mutableMapOf<ResourceLocation, AlchemicalUpgrade>()

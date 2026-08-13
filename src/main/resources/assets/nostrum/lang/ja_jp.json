@@ -55,7 +55,7 @@
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion": "反転",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion.description": "着用した生命の攻撃力と防御力は反転する。",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack": "直接攻撃",
-  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "ダメージを直接相手の体力へ作用させる。\n与ダメージは攻撃力の25%。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "ダメージを直接相手の体力へ作用させる。\n与ダメージは攻撃力の20%。",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "土の加護",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "5%の確率で土クリティカルが発生し、与ダメージが10倍になる",
 

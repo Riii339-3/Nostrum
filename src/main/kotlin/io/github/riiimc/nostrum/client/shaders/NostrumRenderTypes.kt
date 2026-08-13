@@ -1,4 +1,4 @@
-package io.github.riiimc.nostrum.client
+package io.github.riiimc.nostrum.client.shaders
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.ResourceLocation
+import java.time.LocalTime
 
 
 object NostrumRenderTypes {
@@ -263,7 +264,7 @@ object NostrumRenderTypes {
         val right = left + actualWidth
         val bottom = top + actualHeight
 
-        val now = java.time.LocalTime.now()
+        val now = LocalTime.now()
         val localSeconds = now.toSecondOfDay().toFloat()
 
         val minecraft = Minecraft.getInstance()
@@ -385,7 +386,7 @@ object NostrumRenderTypes {
         val right = left + actualWidth
         val bottom = top + actualHeight
 
-        val now = java.time.LocalTime.now()
+        val now = LocalTime.now()
         val localSeconds = now.toSecondOfDay().toFloat()
 
         val minecraft = Minecraft.getInstance()

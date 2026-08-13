@@ -1,0 +1,5 @@
+{
+  "fluid_amount": 1000,
+  "target": "c:tools/melee_weapon",
+  "attributes": []
+}

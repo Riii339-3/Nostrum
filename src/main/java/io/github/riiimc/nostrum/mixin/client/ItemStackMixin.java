@@ -1,5 +1,6 @@
-package io.github.riiimc.nostrum.mixin;
+package io.github.riiimc.nostrum.mixin.client;
 
+import io.github.riiimc.nostrum.NostrumConfig;
 import io.github.riiimc.nostrum.NostrumRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +24,7 @@ public abstract class ItemStackMixin {
         ItemStack stack = (ItemStack) (Object) this;
 
         if (!stack.has(
-                NostrumRegistries.INSTANCE.getALCHEMICAL_UPGRADE_COMPONENT().get()
+                NostrumRegistries.getALCHEMICAL_UPGRADE_COMPONENT().get()
         )) {
             return;
         }

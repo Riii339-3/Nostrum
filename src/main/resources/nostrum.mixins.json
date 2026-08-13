@@ -4,18 +4,23 @@
   "package": "io.github.riiimc.nostrum.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemStackMixin"
+    "direct.EntityAccessor",
+    "direct.LivingEntityAccessor",
+    "direct.LivingEntityMixin",
+    "direct.PlayerMixin"
   ],
   "client": [
-    "BakedGlyphAccessor",
-    "EmptyTextureStateShardInvoker",
-    "FontAccessor",
-    "FontSetAccessor",
-    "FontStringRenderOutputMixin",
-    "GlyphRenderTypesAccessor",
-    "GuiGraphicsMixin",
-    "RenderTypeCompositeAccessor",
-    "RenderTypeCompositeStateAccessor"
+    "client.BakedGlyphAccessor",
+    "client.EmptyTextureStateShardInvoker",
+    "client.FontAccessor",
+    "client.FontSetAccessor",
+    "client.FontStringRenderOutputMixin",
+    "client.GlyphRenderTypesAccessor",
+    "client.GuiGraphicsMixin",
+    "client.ItemStackMixin",
+    "client.RenderTypeCompositeAccessor",
+    "client.RenderTypeCompositeStateAccessor",
+    "direct.LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

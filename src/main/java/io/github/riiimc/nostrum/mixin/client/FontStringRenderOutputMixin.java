@@ -1,7 +1,7 @@
-package io.github.riiimc.nostrum.mixin;
+package io.github.riiimc.nostrum.mixin.client;
 
-import io.github.riiimc.nostrum.client.NostrumFontRenderTypes;
-import io.github.riiimc.nostrum.client.NostrumRenderTypes;
+import io.github.riiimc.nostrum.NostrumConfig;
+import io.github.riiimc.nostrum.client.shaders.NostrumRenderTypes;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 
 @Mixin(targets = "net.minecraft.client.gui.Font$StringRenderOutput")
@@ -54,7 +53,16 @@ public class FontStringRenderOutputMixin {
             int glyph,
             CallbackInfoReturnable<Boolean> cir
     ) {
-        this.nostrum$currentStyle = style;
+
+        ResourceLocation font = style.getFont();
+
+        if (NOSTRUM$ALCHEMICAL_FONT.equals(font)
+                || NOSTRUM$PHILOSOPHER_STONE_FONT.equals(font)
+                || NOSTRUM$EPILOGUE_MOVE.equals(font)) {
+            this.nostrum$currentStyle = style;
+        } else {
+            this.nostrum$currentStyle = null;
+        }
     }
 
 
@@ -75,16 +83,14 @@ public class FontStringRenderOutputMixin {
             Font font,
             ResourceLocation location
     ) {
-        if (NOSTRUM$ALCHEMICAL_FONT.equals(location) || NOSTRUM$PHILOSOPHER_STONE_FONT.equals(location) || NOSTRUM$EPILOGUE_MOVE.equals(location)) {
-            // ★ 実際に使うフォントはバニラ
+        if (this.nostrum$currentStyle == null) {
             return ((FontAccessor) (Object) font)
-                    .nostrum$getFontSet(Style.DEFAULT_FONT);
+                    .nostrum$getFontSet(location);
         }
 
         return ((FontAccessor) (Object) font)
-                .nostrum$getFontSet(location);
+                .nostrum$getFontSet(Style.DEFAULT_FONT);
     }
-
 
 
     @Redirect(
@@ -105,24 +111,13 @@ public class FontStringRenderOutputMixin {
     ) {
         RenderType original = glyph.renderType(displayMode);
 
-        if (this.nostrum$currentStyle == null) {
+        Style style = this.nostrum$currentStyle;
+        if (style == null) {
             return original;
         }
 
+        ResourceLocation font = style.getFont();
 
-        if (!NOSTRUM$ALCHEMICAL_FONT.equals(
-                this.nostrum$currentStyle.getFont()
-        ) && !NOSTRUM$PHILOSOPHER_STONE_FONT.equals(
-                this.nostrum$currentStyle.getFont()
-        ) && !NOSTRUM$EPILOGUE_MOVE.equals(
-                this.nostrum$currentStyle.getFont()
-        )) {
-            return original;
-        }
-
-        /*
-         * 元のRenderTypeからFont textureを取得
-         */
         RenderType.CompositeState state =
                 ((RenderTypeCompositeAccessor) (Object) original)
                         .nostrum$getState();
@@ -140,16 +135,19 @@ public class FontStringRenderOutputMixin {
             return original;
         }
 
-        /*
-         * Font textureは維持して
-         * ShaderだけALCHEMICALに変更
-         */
-        if (this.nostrum$currentStyle.getFont().equals(NOSTRUM$ALCHEMICAL_FONT)) return NostrumRenderTypes.alchemical(texture);
-        else if (this.nostrum$currentStyle.getFont().equals(NOSTRUM$PHILOSOPHER_STONE_FONT)) return NostrumRenderTypes.philosopherStone(texture);
-        else if (this.nostrum$currentStyle.getFont().equals(NOSTRUM$EPILOGUE_MOVE)) return NostrumRenderTypes.epilogueMove(texture);
-        else {
-            return original;
+        if (NOSTRUM$ALCHEMICAL_FONT.equals(font)) {
+            return NostrumRenderTypes.alchemical(texture);
         }
+
+        if (NOSTRUM$PHILOSOPHER_STONE_FONT.equals(font)) {
+            return NostrumRenderTypes.philosopherStone(texture);
+        }
+
+        if (NOSTRUM$EPILOGUE_MOVE.equals(font)) {
+            return NostrumRenderTypes.epilogueMove(texture);
+        }
+
+        return original;
     }
 
     @Inject(

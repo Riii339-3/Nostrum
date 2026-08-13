@@ -2,17 +2,15 @@ package io.github.riiimc.nostrum
 
 import com.mojang.logging.LogUtils
 import io.github.riiimc.nostrum.client.AlchemicalPotionItemColor
-import io.github.riiimc.nostrum.client.NostrumShaders
+import io.github.riiimc.nostrum.client.shaders.NostrumShaders
 import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import io.github.riiimc.nostrum.content.upgrade.custom.inversion.AttributeSwapHandler.reset
 import io.github.riiimc.nostrum.content.upgrade.custom.inversion.AttributeSwapHandler.swap
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.entity.ThrownItemRenderer
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.level.block.Blocks
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.bus.api.SubscribeEvent
@@ -54,16 +52,15 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
 
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC)
+        modContainer.registerConfig(ModConfig.Type.COMMON, NostrumConfig.SPEC)
+        modContainer.registerConfig(ModConfig.Type.CLIENT, NostrumConfig.SPEC_CLIENT)
     }
 
     private fun commonSetup(event: FMLCommonSetupEvent?) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP")
 
-        if (Config.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT))
 
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber)
 
     }
 

@@ -1,7 +1,9 @@
 package io.github.riiimc.nostrum.content.blocks
 
 import io.github.riiimc.nostrum.Nostrum
+import io.github.riiimc.nostrum.NostrumConfig
 import io.github.riiimc.nostrum.NostrumRegistries
+import io.github.riiimc.nostrum.compat.NostrumCompat
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blockentities.PotionData
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
@@ -380,7 +382,7 @@ class AlchemistCauldronBlock(
                     /*
                      * 3～5スロット必要。
                      */
-                    if (inv.slots !in 3..5) {
+                    if (inv.slots !in 3..NostrumConfig.maxPotionUpgradeAmount + 2) {
                         potionFatal(
                             blockEntity,
                             level
@@ -803,6 +805,23 @@ class AlchemistCauldronBlock(
                                     existing.showIcon() ||
                                             effect2.showIcon()
                                 )
+                            if (newEffects[index].amplifier > NostrumConfig.maxPotionLevel) {
+                                newEffects[index] =
+                                    MobEffectInstance(
+                                        existing.effect,
+                                        existing.duration +
+                                                effect2.duration,
+                                        existing.amplifier +
+                                                effect2.amplifier +
+                                                NostrumConfig.maxPotionLevel,
+                                        existing.isAmbient ||
+                                                effect2.isAmbient,
+                                        existing.isVisible ||
+                                                effect2.isVisible,
+                                        existing.showIcon() ||
+                                                effect2.showIcon()
+                                    )
+                            }
 
                         } else {
 
