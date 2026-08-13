@@ -1,6 +1,7 @@
 package io.github.riiimc.nostrum
 
 import io.github.riiimc.nostrum.Nostrum.Companion.rl
+import io.github.riiimc.nostrum.compat.NostrumCompat
 import io.github.riiimc.nostrum.content.blockentities.AlchemistCauldronBlockEntity
 import io.github.riiimc.nostrum.content.blocks.AlchemistCauldronBlock
 import io.github.riiimc.nostrum.content.components.AlchemicalPotionContent
@@ -252,6 +253,7 @@ object NostrumRegistries {
 
 
 
+
     fun registry(bus: IEventBus) {
         ENTITY_TYPES.register(bus)
         ITEMS.register(bus)
@@ -263,6 +265,8 @@ object NostrumRegistries {
         RECIPE_SERIALIZERS.register(bus)
         FLUID_TYPES.register(bus)
         FLUIDS.register(bus)
+
+        NostrumCompat.addonRegistry(bus)
 
         FancyTabSections.addSection(
             rl("nostrum"),  //identifier of the section

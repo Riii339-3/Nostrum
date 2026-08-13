@@ -106,6 +106,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     jarJar(implementation("maven.modrinth:fancytabsections:6.0-NEOFORGE-1.21.1"))
+    implementation "curse.maven:ageratum-1500610:8575846"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     runtimeOnly "curse.maven:kotlin-for-forge-351264:8335665"
