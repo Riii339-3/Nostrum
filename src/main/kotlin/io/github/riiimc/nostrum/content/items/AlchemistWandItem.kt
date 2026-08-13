@@ -8,36 +8,50 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
 
-class AlchemistWandItem(properties: Properties): Item(properties) {
+class AlchemistWandItem(
+    properties: Properties
+) : Item(properties) {
+
     override fun useOn(ctx: UseOnContext): InteractionResult {
         val level = ctx.level
-        if (level.isClientSide) return super.useOn(ctx)
-        if (!level.getBlockState(ctx.clickedPos).`is`(NostrumRegistries.ALCHEMIST_CAULDRON_BLOCK)) return super.useOn(ctx)
+        val pos = ctx.clickedPos
         val player = ctx.player ?: return InteractionResult.PASS
-        val blockEntity = level.getBlockEntity(ctx.clickedPos)
-        if (blockEntity !is AlchemistCauldronBlockEntity) return super.useOn(ctx)
-        if (player.isShiftKeyDown) {
-            blockEntity.mode = blockEntity.mode.next()
-            blockEntity.setChanged()
 
-            if (!level.isClientSide) {
-                level.sendBlockUpdated(
-                    ctx.clickedPos,
-                    level.getBlockState(ctx.clickedPos),
-                    level.getBlockState(ctx.clickedPos),
-                    Block.UPDATE_CLIENTS
-                )
-            }
-            player.displayClientMessage(
-                Component.translatable(
-                    "block.nostrum.alchemist_cauldron.mode.${blockEntity.mode.name.lowercase()}"
-                ),
-                true
-            )
-        }
-        else {
+        if (!level.getBlockState(pos).`is`(NostrumRegistries.ALCHEMIST_CAULDRON_BLOCK)) {
             return InteractionResult.PASS
         }
-        return InteractionResult.SUCCESS
+
+        if (!player.isShiftKeyDown) {
+            return InteractionResult.PASS
+        }
+
+        if (level.isClientSide) {
+            return InteractionResult.sidedSuccess(true)
+        }
+
+        val blockEntity = level.getBlockEntity(pos)
+                as? AlchemistCauldronBlockEntity
+            ?: return InteractionResult.PASS
+
+        blockEntity.mode = blockEntity.mode.next()
+        blockEntity.setChanged()
+
+        val state = level.getBlockState(pos)
+
+        level.sendBlockUpdated(
+            pos,
+            state,
+            state,
+            Block.UPDATE_CLIENTS
+        )
+
+        player.displayClientMessage(
+            Component.translatable(
+                "block.nostrum.alchemist_cauldron.mode.${blockEntity.mode.name.lowercase()}"
+            ),
+            true
+        )
+
+        return InteractionResult.sidedSuccess(false)
     }
 }
