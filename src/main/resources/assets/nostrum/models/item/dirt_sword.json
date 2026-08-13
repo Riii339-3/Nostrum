@@ -1,0 +1,53 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "nostrum:item/dirt_sword"
+  },
+  "display": {
+    "gui": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale":[ 3.375, 3.375, 1 ]
+    },
+    "ground": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 2, 0 ],
+      "scale":[ 0.75, 0.75, 0.5 ]
+    },
+    "frame": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale":[ 3.375, 3.375, 1 ]
+    },
+    "fixed": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale":[ 3.375, 3.375, 1 ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 3, 1 ],
+      "scale": [ 0.825, 0.825, 0.675 ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 3, 1 ],
+      "scale": [ 0.825, 0.825, 0.675 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, -90, 25 ],
+      "translation": [ 1.13, 3.2, 1.13 ],
+      "scale": [ 1.0125, 1.0125, 0.675 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, -90, 25 ],
+      "translation": [ 1.13, 3.2, 1.13 ],
+      "scale": [ 1.0125, 1.0125, 0.675 ]
+    },
+    "head": {
+      "rotation": [ 0, -180, 0 ],
+      "translation": [ 0, 13, 7 ],
+      "scale": [ 3.375, 3.375, 1 ]
+    }
+  }
+}

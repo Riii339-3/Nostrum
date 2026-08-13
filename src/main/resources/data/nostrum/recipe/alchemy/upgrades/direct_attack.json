@@ -5,7 +5,19 @@
   },
   "ingredient": [
     {
-      "item": "minecraft:diamond"
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:diamond_sword"
+    },
+    {
+      "item": "minecraft:dragon_breath"
     }
   ],
   "fluid": {
@@ -21,7 +33,7 @@
     "amount": 1000,
     "components": {
       "nostrum:alchemical_upgrade": {
-        "id": "nostrum:critical_heal"
+        "id": "nostrum:direct_attack"
       }
     }
   }

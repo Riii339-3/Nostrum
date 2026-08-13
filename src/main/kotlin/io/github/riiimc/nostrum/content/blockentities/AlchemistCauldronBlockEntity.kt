@@ -19,179 +19,349 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.fluids.FluidStack
 
-class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(NostrumRegistries.ALCHEMIST_CAULDRON_BE_TYPE.get(), pos, state) {
-    var mode = AlchemistCauldronMode.ALCHEMY
+class AlchemistCauldronBlockEntity(
+    pos: BlockPos,
+    state: BlockState
+) : BlockEntity(
+    NostrumRegistries.ALCHEMIST_CAULDRON_BE_TYPE.get(),
+    pos,
+    state
+) {
+
+    companion object {
+        private const val TAG_MODE = "Mode"
+        private const val TAG_INVENTORY = "Inventory"
+        private const val TAG_FLUID = "Fluid"
+        private const val TAG_OUTPUT_FLUID = "OutputFluid"
+        private const val TAG_POTION_DATA = "PotionData"
+        private const val TAG_POTION_DATA_2 = "PotionData2"
+
+        private const val TAG_EFFECTS = "Effects"
+        private const val TAG_REMAINING = "Remaining"
+        private const val TAG_FORM = "Form"
+    }
+
+    var mode: AlchemistCauldronMode = AlchemistCauldronMode.ALCHEMY
+
     val inventory = ResizeStackHandler(0)
-    var fluid = FluidStack.EMPTY
-    var outputFluid = FluidStack.EMPTY
+
+    var fluid: FluidStack = FluidStack.EMPTY
+
+    var outputFluid: FluidStack = FluidStack.EMPTY
+
     var potionData: PotionData? = null
+
     var potionData2: PotionData? = null
 
-    override fun saveAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
+    override fun saveAdditional(
+        tag: CompoundTag,
+        provider: HolderLookup.Provider
+    ) {
         super.saveAdditional(tag, provider)
-        tag.putString("mode", mode.name)
+
+        // ============================================================
+        // Mode
+        // ============================================================
+
+        tag.putString(
+            TAG_MODE,
+            mode.name
+        )
+
+        // ============================================================
+        // Inventory
+        // ============================================================
+
         tag.put(
-            "Inventory",
+            TAG_INVENTORY,
             inventory.serializeNBT(provider)
         )
+
+        // ============================================================
+        // Fluid
+        // ============================================================
+
         if (!fluid.isEmpty) {
             tag.put(
-                "Fluid",
+                TAG_FLUID,
                 fluid.save(provider)
             )
         }
+
+        // ============================================================
+        // Output Fluid
+        // ============================================================
+
         if (!outputFluid.isEmpty) {
             tag.put(
-                "OutputFluid",
+                TAG_OUTPUT_FLUID,
                 outputFluid.save(provider)
             )
         }
 
-        if (potionData != null) {
-            val potionTag = CompoundTag()
+        // ============================================================
+        // Potion Data
+        // ============================================================
 
-            val effectsTag = ListTag()
-
-            for (effect in potionData!!.effects) {
-                MobEffectInstance.CODEC
-                    .encodeStart(NbtOps.INSTANCE, effect)
-                    .result()
-                    .ifPresent(effectsTag::add)
-            }
-
-            potionTag.put("Effects", effectsTag)
-            potionTag.putInt("Remaining", potionData!!.remaining)
-            potionTag.putString("Form", potionData!!.form.name)
-            tag.put("PotionData", potionTag)
+        potionData?.let { data ->
+            tag.put(
+                TAG_POTION_DATA,
+                savePotionData(data, provider)
+            )
         }
-        if (potionData2 != null) {
-            val potionTag = CompoundTag()
 
-            val effectsTag = ListTag()
-
-            for (effect in potionData2!!.effects) {
-                MobEffectInstance.CODEC
-                    .encodeStart(NbtOps.INSTANCE, effect)
-                    .result()
-                    .ifPresent(effectsTag::add)
-            }
-
-            potionTag.put("Effects", effectsTag)
-            potionTag.putInt("Remaining", potionData!!.remaining)
-            potionTag.putString("Form", potionData!!.form.name)
-            tag.put("PotionData2", potionTag)
+        potionData2?.let { data ->
+            tag.put(
+                TAG_POTION_DATA_2,
+                savePotionData(data, provider)
+            )
         }
     }
 
-    override fun loadAdditional(tag: CompoundTag, provider: HolderLookup.Provider) {
+    override fun loadAdditional(
+        tag: CompoundTag,
+        provider: HolderLookup.Provider
+    ) {
         super.loadAdditional(tag, provider)
-        val modeName = tag.getString("mode")
-        try {
-            mode = AlchemistCauldronMode.valueOf(modeName)
-        } catch (e: IllegalArgumentException) {
-            mode = AlchemistCauldronMode.ALCHEMY
-        }
-        if (tag.contains("Inventory")) {
+
+        // ============================================================
+        // Mode
+        // ============================================================
+
+        mode = readMode(
+            tag.getString(TAG_MODE)
+        )
+
+        // ============================================================
+        // Inventory
+        // ============================================================
+
+        if (tag.contains(TAG_INVENTORY, Tag.TAG_COMPOUND.toInt())) {
             inventory.deserializeNBT(
                 provider,
-                tag.getCompound("Inventory")
+                tag.getCompound(TAG_INVENTORY)
             )
         }
-        if (tag.contains("Fluid")) {
-            val newFluid = FluidStack.parse(
+
+        // ============================================================
+        // Fluid
+        // ============================================================
+
+        fluid = if (
+            tag.contains(TAG_FLUID, Tag.TAG_COMPOUND.toInt())
+        ) {
+            FluidStack.parse(
                 provider,
-                tag.getCompound("Fluid")
+                tag.getCompound(TAG_FLUID)
             ).orElse(FluidStack.EMPTY)
-            fluid = newFluid ?: FluidStack.EMPTY
         } else {
-            fluid = FluidStack.EMPTY
+            FluidStack.EMPTY
         }
 
-        if (tag.contains("OutputFluid")) {
-            val newFluid = FluidStack.parse(
+        // ============================================================
+        // Output Fluid
+        // ============================================================
+
+        outputFluid = if (
+            tag.contains(TAG_OUTPUT_FLUID, Tag.TAG_COMPOUND.toInt())
+        ) {
+            FluidStack.parse(
                 provider,
-                tag.getCompound("OutputFluid")
+                tag.getCompound(TAG_OUTPUT_FLUID)
             ).orElse(FluidStack.EMPTY)
-            outputFluid = newFluid ?: FluidStack.EMPTY
         } else {
-            outputFluid = FluidStack.EMPTY
+            FluidStack.EMPTY
         }
 
-        if (tag.contains("PotionData", Tag.TAG_COMPOUND.toInt())) {
-            val potionTag = tag.getCompound("PotionData")
+        // ============================================================
+        // Potion Data
+        // ============================================================
 
-            val effects = mutableListOf<MobEffectInstance>()
-
-            val effectsTag = potionTag.getList(
-                "Effects",
-                Tag.TAG_COMPOUND.toInt()
+        potionData = if (
+            tag.contains(TAG_POTION_DATA, Tag.TAG_COMPOUND.toInt())
+        ) {
+            loadPotionData(
+                tag.getCompound(TAG_POTION_DATA)
             )
-
-            for (element in effectsTag) {
-                MobEffectInstance.CODEC
-                    .parse(NbtOps.INSTANCE, element)
-                    .result()
-                    .ifPresent(effects::add)
-            }
-
-            potionData = PotionData(
-                effects,
-                potionTag.getInt("Remaining"),
-                potionTag.getString("Form").let { formName ->
-                    try {
-                        AlchemicalPotionForm.valueOf(formName)
-                    } catch (e: IllegalArgumentException) {
-                        AlchemicalPotionForm.DRINK
-                    }
-                }
-            )
-        }
-        else {
-            potionData = null
+        } else {
+            null
         }
 
-        if (tag.contains("PotionData2", Tag.TAG_COMPOUND.toInt())) {
-            val potionTag = tag.getCompound("PotionData2")
+        // ============================================================
+        // Potion Data 2
+        // ============================================================
 
-            val effects = mutableListOf<MobEffectInstance>()
-
-            val effectsTag = potionTag.getList(
-                "Effects",
-                Tag.TAG_COMPOUND.toInt()
+        potionData2 = if (
+            tag.contains(TAG_POTION_DATA_2, Tag.TAG_COMPOUND.toInt())
+        ) {
+            loadPotionData(
+                tag.getCompound(TAG_POTION_DATA_2)
             )
-
-            for (element in effectsTag) {
-                MobEffectInstance.CODEC
-                    .parse(NbtOps.INSTANCE, element)
-                    .result()
-                    .ifPresent(effects::add)
-            }
-
-            potionData2 = PotionData(
-                effects,
-                potionTag.getInt("Remaining"),
-                potionTag.getString("Form").let { formName ->
-                    try {
-                        AlchemicalPotionForm.valueOf(formName)
-                    } catch (e: IllegalArgumentException) {
-                        AlchemicalPotionForm.DRINK
-                    }
-                }
-            )
-        }
-        else {
-            potionData2 = null
+        } else {
+            null
         }
     }
 
+    /**
+     * PotionData を NBT に保存する。
+     */
+    private fun savePotionData(
+        data: PotionData,
+        provider: HolderLookup.Provider
+    ): CompoundTag {
+        val potionTag = CompoundTag()
+
+        // ------------------------------------------------------------
+        // Effects
+        // ------------------------------------------------------------
+
+        val effectsTag = ListTag()
+
+        for (effect in data.effects) {
+            MobEffectInstance.CODEC
+                .encodeStart(
+                    NbtOps.INSTANCE,
+                    effect
+                )
+                .result()
+                .ifPresent { encoded ->
+                    effectsTag.add(encoded)
+                }
+        }
+
+        potionTag.put(
+            TAG_EFFECTS,
+            effectsTag
+        )
+
+        // ------------------------------------------------------------
+        // Remaining
+        // ------------------------------------------------------------
+
+        potionTag.putInt(
+            TAG_REMAINING,
+            data.remaining
+        )
+
+        // ------------------------------------------------------------
+        // Form
+        // ------------------------------------------------------------
+
+        potionTag.putString(
+            TAG_FORM,
+            data.form.name
+        )
+
+        return potionTag
+    }
+
+    /**
+     * PotionData を NBT から読み込む。
+     *
+     * 壊れた Effect が存在していても、読み込める Effect は
+     * 可能な限り復元する。
+     */
+    private fun loadPotionData(
+        potionTag: CompoundTag
+    ): PotionData {
+        val effects = mutableListOf<MobEffectInstance>()
+
+        // ------------------------------------------------------------
+        // Effects
+        // ------------------------------------------------------------
+
+        if (
+            potionTag.contains(
+                TAG_EFFECTS,
+                Tag.TAG_LIST.toInt()
+            )
+        ) {
+            val effectsTag = potionTag.getList(
+                TAG_EFFECTS,
+                Tag.TAG_COMPOUND.toInt()
+            )
+
+            for (element in effectsTag) {
+                MobEffectInstance.CODEC
+                    .parse(
+                        NbtOps.INSTANCE,
+                        element
+                    )
+                    .result()
+                    .ifPresent { effect ->
+                        effects.add(effect)
+                    }
+            }
+        }
+
+        // ------------------------------------------------------------
+        // Remaining
+        // ------------------------------------------------------------
+
+        val remaining = potionTag.getInt(
+            TAG_REMAINING
+        )
+
+        // ------------------------------------------------------------
+        // Form
+        // ------------------------------------------------------------
+
+        val form = readPotionForm(
+            potionTag.getString(TAG_FORM)
+        )
+
+        return PotionData(
+            effects,
+            remaining,
+            form
+        )
+    }
+
+    /**
+     * AlchemistCauldronMode を安全に読み込む。
+     */
+    private fun readMode(
+        name: String
+    ): AlchemistCauldronMode {
+        if (name.isBlank()) {
+            return AlchemistCauldronMode.ALCHEMY
+        }
+
+        return try {
+            AlchemistCauldronMode.valueOf(name)
+        } catch (_: IllegalArgumentException) {
+            AlchemistCauldronMode.ALCHEMY
+        }
+    }
+
+    /**
+     * AlchemicalPotionForm を安全に読み込む。
+     */
+    private fun readPotionForm(
+        name: String
+    ): AlchemicalPotionForm {
+        if (name.isBlank()) {
+            return AlchemicalPotionForm.DRINK
+        }
+
+        return try {
+            AlchemicalPotionForm.valueOf(name)
+        } catch (_: IllegalArgumentException) {
+            AlchemicalPotionForm.DRINK
+        }
+    }
+
+    /**
+     * 現在の釜の状態からレシピ入力を作成する。
+     */
     fun createRecipeInput(): AlchemyRecipeInput {
         val stacks = NonNullList.withSize(
             inventory.slots,
             ItemStack.EMPTY
         )
 
-        for (i in 0 until inventory.slots) {
-            stacks[i] = inventory.getStackInSlot(i)
+        for (slot in 0 until inventory.slots) {
+            stacks[slot] = inventory.getStackInSlot(slot)
         }
 
         return AlchemyRecipeInput(
@@ -201,44 +371,21 @@ class AlchemistCauldronBlockEntity(pos: BlockPos, state: BlockState): BlockEntit
         )
     }
 
+    /**
+     * 現在の状態に一致する錬金レシピを取得する。
+     */
     fun checkRecipe(): AlchemyRecipe? {
         val level = level ?: return null
-
-        val input = createRecipeInput()
-
-        /*
-        println("=== CHECK RECIPE ===")
-        println("state = ${input.state}")
-        println("stacks = ${input.stacks}")
-        println("fluid = ${input.fluid}")
-
-        val recipes = level.recipeManager
-            .getAllRecipesFor(
-                NostrumRegistries.ALCHEMY_RECIPE.get()
-            )
-
-        println("recipes = ${recipes.size}")
-
-        for (holder in recipes) {
-            val recipe = holder.value
-
-            println("Recipe:")
-            println("  state = ${recipe.inputState}")
-            println("  items = ${recipe.inputItems}")
-            println("  fluid = ${recipe.inputFluid}")
-
-            println("  matches = ${recipe.matches(input, level)}")
-        }
-
-         */
 
         return level.recipeManager
             .getRecipeFor(
                 NostrumRegistries.ALCHEMY_RECIPE.get(),
-                input,
+                createRecipeInput(),
                 level
             )
-            .map { it.value }
+            .map { holder ->
+                holder.value
+            }
             .orElse(null)
     }
 }

@@ -1,6 +1,6 @@
 {
   "fluid_amount": 250,
-  "target": "c:melee_weapon",
+  "target": "c:tools/melee_weapon",
   "attributes": [],
   "events": [
     {

@@ -9,9 +9,14 @@ import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent
 import io.github.riiimc.nostrum.content.entities.ThrownAlchemicalPotion
 import io.github.riiimc.nostrum.content.fluids.AlchemicalUpgradeFluidType
 import io.github.riiimc.nostrum.content.items.AlchemicalPotionItem
+import io.github.riiimc.nostrum.content.items.AlchemicalUpgradeFluidBucketItem
 import io.github.riiimc.nostrum.content.items.AlchemistWandItem
+import io.github.riiimc.nostrum.content.items.PhilosophersStoneItem
+import io.github.riiimc.nostrum.content.recipes.PhilosopherStoneRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipeSerializer
+import io.github.riiimc.nostrum.content.tiers.DirtTier
+import io.github.riiimc.nostrum.content.tiers.NostrumRarities
 import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvent
 import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvents
 import net.mcexpanded.fancytabsections.FancyTabSections
@@ -32,6 +37,7 @@ import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.neoforged.bus.api.IEventBus
+import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.fluids.BaseFlowingFluid
 import net.neoforged.neoforge.fluids.FluidType
 import net.neoforged.neoforge.registries.DeferredRegister
@@ -56,7 +62,6 @@ object NostrumRegistries {
     val FLUID_TYPES: DeferredRegister<FluidType> =
         DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Nostrum.MODID)
     val FLUIDS = DeferredRegister.create(Registries.FLUID, Nostrum.MODID)
-
     val ALCHEMICAL_UPGRADE_FLUID_TYPE = FLUID_TYPES.register("alchemical_upgrade_type", Supplier { AlchemicalUpgradeFluidType(FluidType.Properties.create().viscosity(100).temperature(100).density(100).lightLevel(7))})
     val ALCHEMICAL_UPGRADE_FLUID = FLUIDS.register("alchemical_upgrade", Supplier { BaseFlowingFluid.Source(ALCHEMICAL_FLUID_PROPERTIES)})
     val ALCHEMICAL_UPGRADE_FLUID_FLOWING = FLUIDS.register("alchemical_upgrade_flowing", Supplier { BaseFlowingFluid.Flowing(ALCHEMICAL_FLUID_PROPERTIES)})
@@ -73,6 +78,7 @@ object NostrumRegistries {
         .levelDecreasePerBlock(1)
         .tickRate(20)
 
+    @JvmStatic
     val ALCHEMICAL_UPGRADE_COMPONENT = DATA_COMPONENTS.register("alchemical_upgrade", Supplier {
         DataComponentType.builder<AlchemicalUpgradeComponent>()
             .persistent(AlchemicalUpgradeComponent.CODEC)
@@ -91,18 +97,49 @@ object NostrumRegistries {
                 )
             }
         )
+    val PHILOSOPHER_STONE_RECIPE: Supplier<RecipeType<PhilosopherStoneRecipe>> =
+        RECIPE_TYPES.register<RecipeType<PhilosopherStoneRecipe>>(
+            "philosopher_stone",  // We need the qualifying generic here due to generics being generics.
+            Supplier {
+                RecipeType.simple<PhilosopherStoneRecipe>(
+                    ResourceLocation.fromNamespaceAndPath(
+                        Nostrum.MODID,
+                        "philosopher_stone"
+                    )
+                )
+            }
+        )
+
+
+    val PHILOSOPHER_STONE_RECIPE_SERIALIZER: Supplier<RecipeSerializer<PhilosopherStoneRecipe>> =
+        RECIPE_SERIALIZERS.register("philosopher_stone", Supplier { PhilosopherStoneRecipe.Serializer })
+
+
+    val PHILOSOPHER_STONE = ITEMS.register("philosopher_stone", Supplier {
+        PhilosophersStoneItem(
+            Item.Properties().durability(6).rarity(NostrumRarities.EPILOGUE_ENUM_PROXY.value)
+        )
+    })
+
+
     val DIRT_SWORD = ITEMS.register("dirt_sword", Supplier {
         object : SwordItem(
-            Tiers.IRON,
-            Item.Properties().durability(128)
+            DirtTier,
+            Item.Properties()
+                .durability(128)
+                .attributes(
+                    SwordItem.createAttributes(
+                        Tiers.IRON,
+                        3,
+                        -2.4f
+                    )
+                )
         ) {
             override fun isValidRepairItem(
                 stack: ItemStack,
                 repairCandidate: ItemStack
             ): Boolean {
-                return repairCandidate.`is`(
-                    Items.DIRT
-                )
+                return repairCandidate.`is`(Items.DIRT)
             }
         }
     })
@@ -255,26 +292,29 @@ object NostrumRegistries {
                 .add(ULTIMATE_ALCHEMICAL_MATERIAL)
                 .add(ALCHEMICAL_BREWING_MATERIAL)
                 .add(ALCHEMICAL_MIXING_MATERIAL)
+                .add(PHILOSOPHER_STONE)
         )
 
 
         FancyTabSections.addSection(
-            rl("nostrum"),  //identifier of the section
-            SectionColored(rl("tools")) //title to display in the "empty row" (banner) of the section
-                //by default the title will use the translation key `section.[namespace].[path]`, just as shown here
-                .setTitle(Component.translatable("section.nostrum.tools")) //background color of the "empty row" - ARGB
-                .setBannerColor(-0xe5e5d2) //text color - ARGB
-                .setTextColor(-0x44559a) //text shadow
-                .setTextShadow(true) //adds an item
+            rl("nostrum"),
+            SectionColored(rl("tools"))
+                .setTitle(Component.translatable("section.nostrum.tools"))
+                .setBannerColor(-0xe5e5d2)
+                .setTextColor(-0x44559a)
+                .setTextShadow(true)
                 .add(
-                    ItemStack(DIRT_SWORD.get()).apply {
-                        set(
-                            ALCHEMICAL_UPGRADE_COMPONENT,
-                            AlchemicalUpgradeComponent(
-                                rl("critical_attack")
+                    Supplier {
+                        ItemStack(NostrumRegistries.DIRT_SWORD.get()).apply {
+                            set(
+                                NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT,
+                                AlchemicalUpgradeComponent(
+                                    rl("dirt_critical")
+                                )
                             )
-                        )
-                    })
+                        }
+                    }
+                )
         )
 
         for (form in AlchemicalPotionForm.entries) {

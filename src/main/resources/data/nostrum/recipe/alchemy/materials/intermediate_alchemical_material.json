@@ -1,0 +1,31 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:basic_alchemical_material"
+    },
+    {
+      "item": "nostrum:basic_alchemical_material"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    },
+    {
+      "tag": "c:mushrooms"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:intermediate_alchemical_material",
+    "count": 4
+  }
+}

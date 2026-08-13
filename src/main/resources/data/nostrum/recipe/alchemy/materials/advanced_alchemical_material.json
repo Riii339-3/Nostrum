@@ -1,0 +1,34 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:intermediate_alchemical_material"
+    },
+    {
+      "item": "nostrum:intermediate_alchemical_material"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "tag": "minecraft:flowers"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:advanced_alchemical_material",
+    "count": 2
+  }
+}

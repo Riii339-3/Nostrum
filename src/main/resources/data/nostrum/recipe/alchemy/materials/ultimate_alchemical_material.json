@@ -1,0 +1,40 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:superior_alchemical_material"
+    },
+    {
+      "item": "nostrum:superior_alchemical_material"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:dragon_breath"
+    },
+    {
+      "tag": "c:ingots/gold"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:ultimate_alchemical_material",
+    "count": 1
+  }
+}

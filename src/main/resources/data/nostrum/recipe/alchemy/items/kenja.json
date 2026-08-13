@@ -1,0 +1,246 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+    {
+      "item": "nostrum:ultimate_alchemical_material"
+    },
+
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:dragon_egg"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:dragon_breath"
+    },
+    {
+      "item": "minecraft:enchanted_golden_apple"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    {
+      "item": "minecraft:conduit"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "tag": "c:ores/coal"
+    },
+    {
+      "tag": "c:ores/copper"
+    },
+    {
+      "tag": "c:ores/iron"
+    },
+    {
+      "tag": "c:ores/gold"
+    },
+    {
+      "tag": "c:ores/redstone"
+    },
+    {
+      "tag": "c:ores/lapis"
+    },
+    {
+      "tag": "c:ores/diamond"
+    },
+    {
+      "tag": "c:ores/emerald"
+    },
+    {
+      "tag": "c:ores/quartz"
+    },
+    {
+      "tag": "c:ores/netherite_scrap"
+    },
+
+    {
+      "tag": "c:storage_blocks/diamond"
+    },
+    {
+      "tag": "c:storage_blocks/emerald"
+    },
+    {
+      "tag": "c:storage_blocks/netherite"
+    },
+    {
+      "tag": "c:storage_blocks/gold"
+    },
+
+    {
+      "tag": "c:ingots/netherite"
+    },
+    {
+      "tag": "c:ingots/gold"
+    },
+    {
+      "tag": "c:gems/diamond"
+    },
+    {
+      "tag": "c:gems/emerald"
+    },
+
+    {
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "tag": "c:dusts/glowstone"
+    },
+    {
+      "tag": "c:ender_pearls"
+    },
+    {
+      "tag": "c:obsidians"
+    },
+
+    {
+      "tag": "minecraft:flowers"
+    },
+    {
+      "tag": "minecraft:logs"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:planks"
+    },
+
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:crying_obsidian"
+    },
+    {
+      "item": "minecraft:sculk_catalyst"
+    }, {
+      "item": "minecraft:disc_fragment_5"
+    },
+    {
+      "item": "minecraft:sniffer_egg"
+    },
+    {
+      "item": "minecraft:heavy_core"
+    },
+    {
+      "item": "minecraft:ominous_trial_key"
+    },
+    {
+      "item": "minecraft:music_disc_pigstep"
+    },
+    {
+      "item": "minecraft:music_disc_otherside"
+    },
+    {
+      "item": "minecraft:music_disc_5"
+    },
+    {
+      "item": "minecraft:music_disc_relic"
+    },
+    {
+      "item": "minecraft:music_disc_creator"
+    },
+    {
+      "item": "minecraft:music_disc_creator_music_box"
+    },
+    {
+      "item": "minecraft:music_disc_precipice"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "minecraft:totem_of_undying"
+    },
+    {
+      "item": "minecraft:enchanted_book"
+    },
+    {
+      "item": "minecraft:netherite_upgrade_smithing_template"
+    },
+    {
+      "item": "minecraft:silence_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:ward_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:spire_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:eye_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:vex_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:wild_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:coast_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:dune_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:rib_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:snout_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:host_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:raiser_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:flow_armor_trim_smithing_template"
+    },
+    {
+      "item": "minecraft:bolt_armor_trim_smithing_template"
+    }
+  ],
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 2000
+  },
+  "result": {
+    "id": "nostrum:philosopher_stone",
+    "count": 1
+  }
+}

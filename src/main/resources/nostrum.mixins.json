@@ -4,8 +4,18 @@
   "package": "io.github.riiimc.nostrum.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ItemStackMixin"
   ],
   "client": [
+    "BakedGlyphAccessor",
+    "EmptyTextureStateShardInvoker",
+    "FontAccessor",
+    "FontSetAccessor",
+    "FontStringRenderOutputMixin",
+    "GlyphRenderTypesAccessor",
+    "GuiGraphicsMixin",
+    "RenderTypeCompositeAccessor",
+    "RenderTypeCompositeStateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

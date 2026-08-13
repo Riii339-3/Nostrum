@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "NOSTRUM_EPILOGUE",
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "parameters": {
+        "class": "io/github/riiimc/nostrum/content/tiers/NostrumRarities",
+        "field": "EPILOGUE_ENUM_PROXY"
+      }
+    }
+  ]
+}

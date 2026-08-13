@@ -1,0 +1,37 @@
+{
+  "type": "nostrum:alchemy",
+  "state": {
+    "Name": "nostrum:alchemist_cauldron"
+  },
+  "ingredient": [
+    {
+      "item": "nostrum:superior_alchemical_material"
+    },
+    {
+      "item": "minecraft:spider_eye"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:compass"
+    }
+  ],
+  "fluid": {
+    "id": "nostrum:alchemical_upgrade",
+    "amount": 1000
+  },
+  "result": {
+    "id": "nostrum:alchemical_brewing_material",
+    "count": 4
+  },
+  "resultFluid": {
+    "id": "nostrum:alchemical_upgrade",
+    "amount": 1000,
+    "components": {
+      "nostrum:alchemical_upgrade": {
+        "id": "nostrum:pursuit"
+      }
+    }
+  }
+}

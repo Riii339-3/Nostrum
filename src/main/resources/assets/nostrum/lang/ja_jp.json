@@ -9,6 +9,11 @@
 
 
   "item.nostrum.alchemist_wand": "錬金術師の杖",
+  "item.nostrum.philosopher_stone": "賢者の石",
+  "item.nostrum.philosopher_stone.tooltip1": "運命を変えた物語の結末は、儚い終わりを迎えた",
+  "item.nostrum.philosopher_stone.tooltip2":"いかなるアイテムも複製することができる",
+  "item.nostrum.dirt_sword": "土の剣",
+
   "item.nostrum.alchemical_potion": "錬金%sポーション",
   "item.nostrum.alchemical_potion.form.drink": "",
   "item.nostrum.alchemical_potion.form.splash": "スプラッシュ",
@@ -24,6 +29,7 @@
 
   "section.nostrum.alchemy": "錬金術",
   "section.nostrum.alchemy_materials": "錬金素材",
+  "section.nostrum.tools": "ツール類",
 
   "itemGroup.nostrum": "Nostrum",
   "itemGroup.alchemical_potions": "Nostrum: 錬金ポーション",
@@ -36,6 +42,22 @@
   "item.nostrum.alchemical_brewing_material": "錬金醸造素材",
   "item.nostrum.alchemical_mixing_material": "錬金混成素材",
 
+  "nostrum.tooltip.alchemical_upgrade": "錬金強化 - %s -",
+  "nostrum.tooltip.alchemical_upgrade.description": "錬金強化 - %s -",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_heal": "クリティカルヒール",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_heal.description": "ダメージを与えた際、\n10%の確率でプレイヤーのHPの与ダメ分回復する。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_attack": "クリティカル攻撃",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_attack.description": "ダメージを与えた際、\n10%の確率で与ダメージが200%増加する。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.pursuit": "追撃",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.pursuit.description": "ダメージを与えた際、\n与ダメの20%を追撃として与える。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion": "反転",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion.description": "着用した生命の攻撃力と防御力は反転する。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack": "直接攻撃",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "ダメージを直接相手の体力へ作用させる。\n与ダメージは攻撃力の25%。",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "土の加護",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "5%の確率で土クリティカルが発生し、与ダメージが10倍になる",
 
-  "emi.category.nostrum.alchemy": "錬金術"
+  "emi.category.nostrum.alchemy": "錬金術",
+  "item.nostrum.alchemical_upgrade_bucket": "錬金強化用液体入りバケツ"
+
 }

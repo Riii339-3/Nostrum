@@ -1,0 +1,81 @@
+{
+  "vertex": "nostrum:tooltip_background",
+  "fragment": "nostrum:tooltip_background",
+
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0",
+    "UV2"
+  ],
+
+  "samplers": [],
+
+  "uniforms": [
+    {
+      "name": "ModelViewMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      ]
+    },
+
+    {
+      "name": "ProjMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+      ]
+    },
+
+    {
+      "name": "NostrumTime",
+      "type": "float",
+      "count": 1,
+      "values": [0.0]
+    },
+
+    {
+      "name": "RealTime",
+      "type": "float",
+      "count": 1,
+      "values": [0.0]
+    },
+
+    {
+      "name": "TooltipX",
+      "type": "float",
+      "count": 1,
+      "values": [0.0]
+    },
+
+    {
+      "name": "TooltipY",
+      "type": "float",
+      "count": 1,
+      "values": [0.0]
+    },
+
+    {
+      "name": "TooltipWidth",
+      "type": "float",
+      "count": 1,
+      "values": [1.0]
+    },
+
+    {
+      "name": "TooltipHeight",
+      "type": "float",
+      "count": 1,
+      "values": [1.0]
+    }
+  ]
+}

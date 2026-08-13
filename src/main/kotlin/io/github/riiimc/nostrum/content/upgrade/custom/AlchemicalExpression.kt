@@ -2,6 +2,7 @@ package io.github.riiimc.nostrum.content.upgrade.custom
 
 import io.github.riiimc.nostrum.NostrumRegistries
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.damagesource.DamageSource
 import net.neoforged.bus.api.Event
 import java.lang.reflect.Modifier
 
@@ -97,30 +98,159 @@ object AlchemicalExpression {
         return null
     }
 
+    private fun findAssignment(
+        expression: String
+    ): Assignment? {
+        var depth = 0
+
+        for (i in expression.indices) {
+            when (expression[i]) {
+                '(' -> depth++
+                ')' -> depth--
+
+                '=' -> {
+                    if (depth != 0) continue
+
+                    // == は比較演算子なので除外
+                    if (
+                        (i > 0 && expression[i - 1] == '=') ||
+                        (i + 1 < expression.length && expression[i + 1] == '=')
+                    ) {
+                        continue
+                    }
+
+                    val left = expression
+                        .substring(0, i)
+                        .trim()
+
+                    val right = expression
+                        .substring(i + 1)
+                        .trim()
+
+                    val dot = left.lastIndexOf('.')
+
+                    require(dot != -1) {
+                        "Invalid assignment: $expression"
+                    }
+
+                    return Assignment(
+                        target = left.substring(0, dot),
+                        property = left.substring(dot + 1),
+                        value = right
+                    )
+                }
+            }
+        }
+
+        return null
+    }
+
+    private fun findField(
+        clazz: Class<*>,
+        name: String
+    ): java.lang.reflect.Field {
+        return clazz.getField(name)
+            .apply {
+                isAccessible = true
+            }
+    }
+
+    private fun readField(
+        target: Any,
+        name: String
+    ): Any? {
+        val clazz =
+            if (target is Class<*>) target
+            else target.javaClass
+
+        val field = findField(clazz, name)
+
+        return field.get(
+            if (Modifier.isStatic(field.modifiers)) {
+                null
+            } else {
+                target
+            }
+        )
+    }
+
     fun execute(
         expression: String,
         variables: Map<String, Any?>
     ): Any? {
-        val chain = parseChain(expression.trim())
+        val value = expression.trim()
+
+        // 代入
+        findAssignment(value)?.let { assignment ->
+            val target = evaluateArgument(
+                assignment.target,
+                variables
+            )
+
+            requireNotNull(target) {
+                "Cannot assign ${assignment.property} on null"
+            }
+
+            val field = findField(
+                target.javaClass,
+                assignment.property
+            )
+
+            val rawValue = evaluateArgument(
+                assignment.value,
+                variables
+            )
+
+            val converted = convertArgument(
+                rawValue,
+                field.type
+            )
+
+            require(
+                converted != null || !field.type.isPrimitive
+            ) {
+                "Cannot assign $rawValue to ${field.type.name}"
+            }
+
+            field.set(target, converted)
+
+            return converted
+        }
+
+        val chain = parseChain(value)
 
         var current =
             resolveVariable(chain.first().name, variables)
 
         for (call in chain.drop(1)) {
-            current = invoke(
-                requireNotNull(current) {
-                    "Cannot invoke ${call.name} on null"
-                },
-                call.name,
-                call.arguments.map {
-                    evaluateArgument(it, variables)
+            val target = requireNotNull(current) {
+                "Cannot access ${call.name} on null"
+            }
+
+            current =
+                if (call.arguments.isEmpty()) {
+                    try {
+                        readField(target, call.name)
+                    } catch (_: NoSuchFieldException) {
+                        invoke(
+                            target,
+                            call.name,
+                            emptyList()
+                        )
+                    }
+                } else {
+                    invoke(
+                        target,
+                        call.name,
+                        call.arguments.map {
+                            evaluateArgument(it, variables)
+                        }
+                    )
                 }
-            )
         }
 
         return current
     }
-
     fun evaluateCondition(
         expression: String,
         variables: Map<String, Any?>
@@ -364,16 +494,27 @@ object AlchemicalExpression {
         for (i in expression.indices) {
             when (expression[i]) {
                 '(' -> depth++
+
                 ')' -> depth--
 
                 '.' -> {
-                    if (depth == 0) {
-                        result += parseCall(
-                            expression.substring(start, i)
-                        )
+                    if (depth != 0) continue
 
-                        start = i + 1
+                    // 数字.数字 は小数点
+                    if (
+                        i > 0 &&
+                        i + 1 < expression.length &&
+                        expression[i - 1].isDigit() &&
+                        expression[i + 1].isDigit()
+                    ) {
+                        continue
                     }
+
+                    result += parseCall(
+                        expression.substring(start, i)
+                    )
+
+                    start = i + 1
                 }
             }
         }
@@ -384,7 +525,6 @@ object AlchemicalExpression {
 
         return result
     }
-
     private fun parseCall(
         value: String
     ): Call {
@@ -634,7 +774,13 @@ object AlchemicalExpression {
             "ResourceLocation" to
                     ResourceLocation::class.java,
 
-            "Random" to random
+            "Random" to random,
+
+            "ResourceKey" to
+                    net.minecraft.resources.ResourceKey::class.java,
+            "Registries" to
+                    net.minecraft.core.registries.Registries::class.java,
+            "DamageSource" to DamageSource::class.java
         )
     }
 
@@ -644,5 +790,9 @@ object AlchemicalExpression {
         val right: String
     )
 
-    // invoke / convertArgument は今のものをそのまま
+    private data class Assignment(
+        val target: String,
+        val property: String,
+        val value: String
+    )
 }

@@ -8,6 +8,11 @@
   "block.nostrum.alchemist_cauldron.mode.upgrade": "Change Mode to Upgrade",
 
   "item.nostrum.alchemist_wand": "Alchemist Wand",
+  "item.nostrum.philosopher_stone": "Philosopher's Stone",
+  "item.nostrum.philosopher_stone.tooltip1": "The story that changed their fate came to a fleeting end",
+  "item.nostrum.philosopher_stone.tooltip2":"Any item can be duplicated",
+  "item.nostrum.dirt_sword": "Dirt Sword",
+
 
   "item.nostrum.alchemical_potion": "%sAlchemical Potion",
   "item.nostrum.alchemical_potion.form.drink": "",
@@ -24,6 +29,7 @@
 
   "section.nostrum.alchemy": "Alchemy",
   "section.nostrum.alchemy_materials": "Alchemy Materials",
+  "section.nostrum.tools": "Tools",
 
   "item.nostrum.basic_alchemical_material": "Alchemy Basic Material",
   "item.nostrum.intermediate_alchemical_material": "Alchemy Intermediate Material",
@@ -36,6 +42,21 @@
   "itemGroup.nostrum": "Nostrum",
   "itemGroup.alchemical_potions": "Nostrum: Alchemical Potions",
 
+  "nostrum.tooltip.alchemical_upgrade": "Alchemy Upgrade: %s",
+  "nostrum.tooltip.alchemical_upgrade.description": "Alchemy Upgrade: %s",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_heal": "Critical Heal",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_heal.description": "Heals the player for 10% of their max health when taking critical damage.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_attack": "Critical Attack",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.critical_attack.description": "Deals 10% more damage when taking critical damage.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.pursuit": "Pursuit",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.pursuit.description": "Increases the player's movement speed by 10% when taking critical damage.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion": "Inversion",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.inversion.description": "Swaps the player's attack and armor values.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack": "Direct Attack",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "Damage is applied directly to the opponent’s health.\nThe damage dealt is 25% of the attack power.",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "Dirt Power",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "There is a 5% chance of a Earth Critical hit occurring,\nwhich multiplies damage dealt by 10",
 
-  "emi.category.nostrum.alchemy": "Alchemy"
+  "emi.category.nostrum.alchemy": "Alchemy",
+  "item.nostrum.alchemical_upgrade_bucket": "Alchemy Upgrade Fluid Bucket"
 }

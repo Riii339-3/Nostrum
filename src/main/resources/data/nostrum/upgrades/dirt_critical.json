@@ -1,0 +1,27 @@
+{
+  "fluid_amount": 250,
+  "target": "c:tools/melee_weapon",
+  "attributes": [],
+  "events": [
+    {
+      "event": "net.neoforged.neoforge.event.entity.living.LivingDamageEvent$Pre",
+
+      "variables": {
+        "attacker": "event.getSource().getEntity()",
+        "stack": "attacker.getMainHandItem()",
+        "upgrade": "stack.get(ALCHEMICAL_UPGRADE_COMPONENT)"
+      },
+
+      "conditions": [
+        "attacker != null",
+        "upgrade != null",
+        "upgrade.getId() == ResourceLocation.fromNamespaceAndPath(\"nostrum\", \"dirt_critical\")",
+        "Random.nextDouble() < 0.05"
+      ],
+
+      "actions": [
+        "event.setNewDamage(event.getNewDamage() * 10)"
+      ]
+    }
+  ]
+}

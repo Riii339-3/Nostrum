@@ -20,7 +20,7 @@
       ],
 
       "actions": [
-        "attacker.setHealth(attacker.getHealth() + event.getNewDamage() / 2)"
+        "attacker.setHealth(attacker.getHealth() + event.getNewDamage())"
       ]
     }
   ]

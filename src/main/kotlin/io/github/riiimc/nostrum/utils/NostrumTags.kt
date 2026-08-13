@@ -1,7 +1,9 @@
 package io.github.riiimc.nostrum.utils
 
 import io.github.riiimc.nostrum.Nostrum
+import io.github.riiimc.nostrum.Nostrum.Companion.rl
 import net.minecraft.core.registries.Registries
+import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
 
 object NostrumTags {
@@ -12,4 +14,8 @@ object NostrumTags {
     val AEROSOL = TagKey.create(Registries.ITEM, Nostrum.rl("potion/aerosol"))
     val SPRAY = TagKey.create(Registries.ITEM, Nostrum.rl("potion/spray"))
     val MIXING_MATERIAL = TagKey.create(Registries.ITEM, Nostrum.rl("mixing_material"))
+    val PHILOSOPHERS_STONE_BLACKLIST =
+        ItemTags.create(
+            rl("philosopher_stone_blacklist")
+        )
 }

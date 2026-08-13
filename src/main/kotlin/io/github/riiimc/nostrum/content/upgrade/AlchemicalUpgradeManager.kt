@@ -115,10 +115,6 @@ class AlchemicalUpgradeManager : SimpleJsonResourceReloadListener(
         }
     }
     private fun handleEvent(event: Event) {
-        Nostrum.LOGGER.info(
-            "Alchemical event fired: {}",
-            event.javaClass.name
-        )
 
         for ((upgradeId, upgrade) in upgrades) {
             for (alchemicalEvent in upgrade.events) {
@@ -146,11 +142,6 @@ class AlchemicalUpgradeManager : SimpleJsonResourceReloadListener(
                                     variables
                                 )
 
-                            Nostrum.LOGGER.info(
-                                "Condition [{}] => {}",
-                                condition,
-                                result
-                            )
 
                             result
                         } catch (e: Exception) {
