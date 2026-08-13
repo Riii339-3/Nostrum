@@ -4,10 +4,10 @@
   "package": "io.github.riiimc.nostrum.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "direct.EntityAccessor",
-    "direct.LivingEntityAccessor",
-    "direct.LivingEntityMixin",
-    "direct.PlayerMixin"
+    "direct_attack.EntityAccessor",
+    "direct_attack.LivingEntityAccessor",
+    "direct_attack.LivingEntityMixin",
+    "direct_attack.PlayerMixin"
   ],
   "client": [
     "client.BakedGlyphAccessor",
@@ -20,7 +20,7 @@
     "client.ItemStackMixin",
     "client.RenderTypeCompositeAccessor",
     "client.RenderTypeCompositeStateAccessor",
-    "direct.LivingEntityRendererMixin"
+    "direct_attack.client.LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -7,4 +7,4 @@ This project is my first mod.
 2. You run `.\gradlew build`
 3. ./build/libs/Nostrum-<version>.jar
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+Unless otherwise stated, this project is provided under the MIT Licence.

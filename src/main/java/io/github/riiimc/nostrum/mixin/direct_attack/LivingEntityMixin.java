@@ -1,10 +1,9 @@
-package io.github.riiimc.nostrum.mixin.direct;
+package io.github.riiimc.nostrum.mixin.direct_attack;
 
 import io.github.riiimc.nostrum.mixinitf.LivingEntityMixinItf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;

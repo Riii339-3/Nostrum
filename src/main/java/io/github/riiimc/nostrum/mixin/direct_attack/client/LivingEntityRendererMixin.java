@@ -1,4 +1,4 @@
-package io.github.riiimc.nostrum.mixin.direct;
+package io.github.riiimc.nostrum.mixin.direct_attack.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
