@@ -10,12 +10,9 @@
     "direct_attack.PlayerMixin"
   ],
   "client": [
-    "client.BakedGlyphAccessor",
     "client.EmptyTextureStateShardInvoker",
     "client.FontAccessor",
-    "client.FontSetAccessor",
     "client.FontStringRenderOutputMixin",
-    "client.GlyphRenderTypesAccessor",
     "client.GuiGraphicsMixin",
     "client.ItemStackMixin",
     "client.RenderTypeCompositeAccessor",
