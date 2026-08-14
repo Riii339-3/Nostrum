@@ -1,0 +1,18 @@
+{
+  "fluid_amount": 250,
+  "target": "c:tools/melee_weapon",
+  "attributes": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "operation": "add_multiplied_total",
+      "equipment_slot": "mainhand",
+      "amount": 0.1
+    },
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "operation": "add_value",
+      "equipment_slot": "mainhand",
+      "amount": 4
+    }
+  ]
+}

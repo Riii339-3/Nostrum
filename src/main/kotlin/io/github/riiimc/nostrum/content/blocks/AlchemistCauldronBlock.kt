@@ -1546,6 +1546,7 @@ class AlchemistCauldronBlock(
                     return
                 }
 
+        /*
         for (attribute in upgrade.attributes) {
 
             applyAttribute(
@@ -1554,6 +1555,8 @@ class AlchemistCauldronBlock(
                 attribute
             )
         }
+
+         */
     }
 
     /*

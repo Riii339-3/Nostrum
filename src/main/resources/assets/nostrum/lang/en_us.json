@@ -58,6 +58,11 @@
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "Damage is applied directly to the opponent’s health.\nThe damage dealt is 20% of the attack power.",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "Dirt Power",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "There is a 5% chance of a Earth Critical hit occurring,\nwhich multiplies damage dealt by 10",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.damage": "Damage",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.damage.description": "Increases Attack by +4 and further increases it by 10 per cent.",
+
+  "fluid_type.nostrum.alchemical_upgrade_type.upgrade": "Alchemical Upgrade Fluid: %s",
+  "fluid_type.nostrum.alchemical_upgrade_type": "Alchemical Upgrade Fluid",
 
   "emi.category.nostrum.alchemy": "Alchemy",
   "item.nostrum.alchemical_upgrade_bucket": "Alchemy Upgrade Fluid Bucket"

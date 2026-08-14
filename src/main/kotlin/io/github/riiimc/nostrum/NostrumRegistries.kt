@@ -252,6 +252,10 @@ object NostrumRegistries {
         Item(Item.Properties().stacksTo(64).rarity(Rarity.EPIC))
     })
 
+    val ALCHEMICAL_WASTE = ITEMS.register("alchemical_waste", Supplier {
+        Item(Item.Properties().stacksTo(64).rarity(Rarity.COMMON))
+    })
+
 
 
 
@@ -307,6 +311,7 @@ object NostrumRegistries {
                 .add(ULTIMATE_ALCHEMICAL_MATERIAL)
                 .add(ALCHEMICAL_BREWING_MATERIAL)
                 .add(ALCHEMICAL_MIXING_MATERIAL)
+                .add(ALCHEMICAL_WASTE)
                 .add(PHILOSOPHER_STONE)
         )
 

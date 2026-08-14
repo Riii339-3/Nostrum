@@ -5,7 +5,10 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
+import io.github.riiimc.nostrum.NostrumRegistries
+import io.github.riiimc.nostrum.content.components.AlchemicalUpgradeComponent
 import io.github.riiimc.nostrum.content.recipes.alchemy.AlchemyRecipe
+import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.resources.ResourceLocation
 import kotlin.math.cos
 import kotlin.math.min
@@ -21,7 +24,7 @@ class AlchemyEmiRecipe(
         recipe.inputItems.map { EmiIngredient.of(it) }
 
     private val fluid: EmiStack =
-        EmiStack.of(recipe.inputFluid.fluid)
+        EmiStack.of(recipe.inputFluid.fluid, recipe.inputFluid.amount.toLong())
 
     private val output: List<EmiStack> =
         buildList {
@@ -30,7 +33,10 @@ class AlchemyEmiRecipe(
             }
 
             if (!recipe.resultFluid.isEmpty) {
-                add(EmiStack.of(recipe.resultFluid.fluid))
+                val component = recipe.resultFluid.get(NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT) ?: add(EmiStack.of(recipe.resultFluid.fluid, recipe.resultFluid.amount.toLong()))
+                val alchemicalUpgrade = component as AlchemicalUpgradeComponent
+                add(EmiStack.of(recipe.resultFluid.fluid, DataComponentPatch.builder().set(NostrumRegistries.ALCHEMICAL_UPGRADE_COMPONENT.get(),
+                    AlchemicalUpgradeComponent(alchemicalUpgrade.id)).build() , recipe.resultFluid.amount.toLong()))
             }
         }
 

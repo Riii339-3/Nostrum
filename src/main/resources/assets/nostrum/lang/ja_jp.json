@@ -58,6 +58,11 @@
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.direct_attack.description": "ダメージを直接相手の体力へ作用させる。\n与ダメージは攻撃力の20%。",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical": "土の加護",
   "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.dirt_critical.description": "5%の確率で土クリティカルが発生し、与ダメージが10倍になる",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.damage": "攻撃力増加",
+  "nostrum.tooltip.alchemical_upgrade.upgrade.nostrum.damage.description": "攻撃力を+4し、さらに10%増加させる.",
+
+  "fluid_type.nostrum.alchemical_upgrade_type.upgrade": "錬金強化用液体: %s",
+  "fluid_type.nostrum.alchemical_upgrade_type": "錬金強化用液体",
 
   "emi.category.nostrum.alchemy": "錬金術",
   "item.nostrum.alchemical_upgrade_bucket": "錬金強化用液体入りバケツ"
