@@ -1,6 +1,7 @@
 package io.github.riiimc.nostrum.content.tiers
 
 import io.github.riiimc.nostrum.Nostrum.Companion.rl
+import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Style
 import net.minecraft.world.item.Rarity
 import net.neoforged.fml.common.asm.enumextension.EnumProxy
@@ -13,6 +14,6 @@ object NostrumRarities {
         Rarity::class.java,
         -1,
         "nostrum:epilogue",
-        UnaryOperator { style: Style -> style.withFont(rl("epilogue_move")) }
+        UnaryOperator { style: Style -> style.withColor(ChatFormatting.valueOf("EPILOGUE_MOVE")) }
     )
 }

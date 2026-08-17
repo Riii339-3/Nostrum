@@ -23,6 +23,7 @@ import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvent
 import io.github.riiimc.nostrum.content.upgrade.AlchemicalEvents
 import net.mcexpanded.fancytabsections.FancyTabSections
 import net.mcexpanded.fancytabsections.Section.SectionColored
+import net.minecraft.ChatFormatting
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
@@ -186,7 +187,7 @@ object NostrumRegistries {
         "nostrum",
         Supplier {
             CreativeModeTab.builder()
-                .title(Component.translatable("itemGroup.nostrum"))
+                .title(Component.translatable("itemGroup.nostrum").withColor(0xFFFFFF).withStyle(ChatFormatting.valueOf("CRAZY")))
                 .icon { ItemStack(ALCHEMIST_WAND.get()) }
                 .build()
         }

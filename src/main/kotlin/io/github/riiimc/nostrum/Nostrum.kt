@@ -6,6 +6,7 @@ import io.github.riiimc.nostrum.client.shaders.NostrumShaders
 import io.github.riiimc.nostrum.content.upgrade.UpgradeManage
 import io.github.riiimc.nostrum.content.upgrade.custom.inversion.AttributeSwapHandler.reset
 import io.github.riiimc.nostrum.content.upgrade.custom.inversion.AttributeSwapHandler.swap
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.entity.ThrownItemRenderer
 import net.minecraft.network.chat.Component
@@ -176,19 +177,11 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
                 Component.translatable(
                     "nostrum.tooltip.alchemical_upgrade",
                     Component.translatable("nostrum.tooltip.alchemical_upgrade.upgrade.${component.id.namespace}.${component.id.path}")
-                ).withStyle { style ->
-                    style
-                        .withFont(ResourceLocation.fromNamespaceAndPath("nostrum", "alchemical"))
-                        .withBold(true)
-                }
+                ).withStyle(ChatFormatting.valueOf("ALCHEMICAL"))
             )
             val description = Component.translatable(
                 "nostrum.tooltip.alchemical_upgrade.upgrade.${component.id.namespace}.${component.id.path}.description"
-            ).withStyle { style ->
-                style
-                    .withFont(ResourceLocation.fromNamespaceAndPath("nostrum", "alchemical"))
-                    .withBold(true)
-            }
+            ).withStyle(ChatFormatting.valueOf("ALCHEMICAL"))
 
             description.string.split("\n").forEachIndexed { index, line ->
                 event.toolTip.add(
@@ -198,6 +191,7 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
             }
         }
 
+        /*
         @SubscribeEvent
         @JvmStatic
         fun onRenderTick(event: RenderFrameEvent.Pre) {
@@ -229,7 +223,7 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
                 Vector3f(0.025f, 0.08f, 0.38f),
                 Vector3f(0.32f, 0.58f, 1.0f))
 
-            /*
+
             val now = java.time.LocalTime.now()
             val localSeconds = now.toSecondOfDay()
 
@@ -239,8 +233,10 @@ class Nostrum(modEventBus: IEventBus, modContainer: ModContainer) {
 
             NostrumShaders.updateTooltipTime(localSeconds.toFloat())
 
-             */
+
         }
+
+         */
     }
 
 

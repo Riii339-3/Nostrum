@@ -1,6 +1,7 @@
 package io.github.riiimc.nostrum.content.items
 
 import io.github.riiimc.nostrum.Nostrum.Companion.rl
+import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -21,8 +22,8 @@ class PhilosophersStoneItem(
         component: MutableList<Component>,
         flag: TooltipFlag
     ) {
-        component.add(Component.translatable("item.nostrum.philosopher_stone.tooltip1").withStyle {style -> style.withFont(rl("epilogue"))})
-        component.add(Component.translatable("item.nostrum.philosopher_stone.tooltip2").withStyle {style -> style.withFont(rl("epilogue"))})
+        component.add(Component.translatable("item.nostrum.philosopher_stone.tooltip1").withStyle(ChatFormatting.valueOf("EPILOGUE")))
+        component.add(Component.translatable("item.nostrum.philosopher_stone.tooltip2").withStyle(ChatFormatting.valueOf("EPILOGUE")))
         return super.appendHoverText(stack, tooltip, component, flag)
     }
 }
