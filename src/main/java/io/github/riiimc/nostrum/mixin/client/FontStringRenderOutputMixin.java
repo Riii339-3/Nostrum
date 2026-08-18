@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-
+// Old Code
 @Mixin(targets = "net.minecraft.client.gui.Font$StringRenderOutput")
 public class FontStringRenderOutputMixin {
 

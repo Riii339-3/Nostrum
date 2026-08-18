@@ -187,7 +187,7 @@ object NostrumRegistries {
         "nostrum",
         Supplier {
             CreativeModeTab.builder()
-                .title(Component.translatable("itemGroup.nostrum").withColor(0xFFFFFF).withStyle(ChatFormatting.valueOf("CRAZY")))
+                .title(Component.translatable("itemGroup.nostrum").withColor(0xFFFFFF).withStyle(ChatFormatting.valueOf("GRID")))
                 .icon { ItemStack(ALCHEMIST_WAND.get()) }
                 .build()
         }
@@ -196,7 +196,7 @@ object NostrumRegistries {
         "alchemical_potions",
         Supplier {
             CreativeModeTab.builder()
-                .title(Component.translatable("itemGroup.alchemical_potions"))
+                .title(Component.translatable("itemGroup.alchemical_potions").withColor(0xFFFFFF).withStyle(ChatFormatting.valueOf("GRID")))
                 .icon {
                     ItemStack(ALCHEMICAL_POTION.get()).apply {
                         set(
